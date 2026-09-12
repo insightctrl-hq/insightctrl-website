@@ -11,15 +11,15 @@ import { DIAGNOSTIC_STAGES, scoreToBand } from '../data/diagnosticStages'
 const HOW_IT_WORKS = [
   {
     title: 'Run the diagnostic',
-    body: 'Each stage is free. Five questions. The score shows you where the structural failure is.',
+    body: 'Five free questions. One clear score.',
   },
   {
     title: 'See the root cause',
-    body: 'The diagnostic traces visible problems back to the structural failure.',
+    body: 'Traced to the structural failure.',
   },
   {
     title: 'Choose how to work with us',
-    body: 'Book a 60-minute Operating Room session. Or bring us in to build the fix directly.',
+    body: 'Book a session, or bring us in to build.',
   },
 ]
 
@@ -136,13 +136,16 @@ function Diagnostic() {
 
       <section className="section-divider py-20">
         <p className="text-eyebrow">How it works</p>
-        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="mt-8 flex flex-col divide-y divide-border sm:flex-row sm:divide-x sm:divide-y-0">
           {HOW_IT_WORKS.map((step) => (
-            <div key={step.title} className="card">
-              <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-text-primary">
+            <div
+              key={step.title}
+              className="py-4 first:pt-0 last:pb-0 sm:flex-1 sm:px-6 sm:py-0 sm:first:pl-0"
+            >
+              <h3 className="text-[13px] font-semibold tracking-[-0.01em] text-text-primary">
                 {step.title}
               </h3>
-              <p className="mt-2 text-body">{step.body}</p>
+              <p className="mt-1.5 text-[13px] text-text-secondary">{step.body}</p>
             </div>
           ))}
         </div>

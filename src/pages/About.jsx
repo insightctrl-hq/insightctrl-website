@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import ChaosToArc from '../components/ChaosToArc'
 
 const TEAM = [
@@ -14,16 +15,19 @@ const TEAM = [
 function About() {
   return (
     <div className="container-content">
-      <section className="grid items-center gap-x-10 py-12 lg:grid-cols-[minmax(0,1fr)_300px]">
+      <section className="grid items-center gap-x-10 pb-6 pt-12 lg:grid-cols-[minmax(0,1fr)_300px]">
         <div>
           <p className="text-eyebrow">Who we are</p>
           <h1 className="mt-5 text-section-headline">
             Vision builders are the future of Africa. Running the business behind the vision is
             a different skill. We take care of the structure so you can do what you do best.
           </h1>
-          <p className="mt-5 max-w-[32rem] text-body">
-            Insight into what is broken. CTRL over how it gets fixed.
-          </p>
+          <Link
+            to="/thinking"
+            className="mt-5 inline-block text-[13px] font-medium text-accent-cyan transition-colors hover:text-text-primary"
+          >
+            Learn more →
+          </Link>
         </div>
 
         <div className="hidden lg:block">
@@ -31,7 +35,7 @@ function About() {
         </div>
       </section>
 
-      <section className="section-divider py-20">
+      <section className="section-divider pb-20 pt-6">
         <p className="text-eyebrow">Our framework</p>
         <h2 className="mt-5 text-section-headline">From Chaos to CTRL.</h2>
         <p className="mt-5 max-w-[36rem] text-body">
