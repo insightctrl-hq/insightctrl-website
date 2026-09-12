@@ -42,7 +42,7 @@ const openTally = (url) => window.open(url, '_blank', 'noopener,noreferrer')
 function Book() {
   return (
     <div className="container-content">
-      <section className="py-20">
+      <section className="py-12">
         <p className="text-eyebrow">Book a session</p>
         <h1 className="mt-5 text-hero">Let's talk.</h1>
       </section>

@@ -5,6 +5,7 @@ import StageCard from '../components/StageCard'
 import EngagementTierCard from '../components/EngagementTierCard'
 import DiagnosticQuestion from '../components/DiagnosticQuestion'
 import DiagnosticResult from '../components/DiagnosticResult'
+import DiagnosticGauge from '../components/DiagnosticGauge'
 import { DIAGNOSTIC_STAGES, scoreToBand } from '../data/diagnosticStages'
 
 const HOW_IT_WORKS = [
@@ -115,16 +116,22 @@ function Diagnostic() {
 
   return (
     <div className="container-content">
-      <section className="py-20">
-        <p className="text-eyebrow">Take the free diagnostic</p>
-        <h1 className="mt-5 text-section-headline">
-          You may have been solving the wrong problem. Operational clarity starts with an
-          honest diagnosis.
-        </h1>
-        <p className="mt-5 max-w-[36rem] text-body">
-          You already know something is wrong. Pick the stage where the pain is loudest and
-          find out what to fix first.
-        </p>
+      <section className="grid items-center gap-x-10 py-12 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <div>
+          <p className="text-eyebrow">Take the free diagnostic</p>
+          <h1 className="mt-5 text-section-headline">
+            You may have been solving the wrong problem. Operational clarity starts with an
+            honest diagnosis.
+          </h1>
+          <p className="mt-5 max-w-[32rem] text-body">
+            You already know something is wrong. Pick the stage where the pain is loudest and
+            find out what to fix first.
+          </p>
+        </div>
+
+        <div className="hidden lg:block">
+          <DiagnosticGauge />
+        </div>
       </section>
 
       <section className="section-divider py-20">
@@ -173,7 +180,6 @@ function Diagnostic() {
             description="The strategy is clear. The systems are not. We come in and build them with you."
             ctaLabel="Start a build"
             onCtaClick={() => navigate('/book')}
-            highlight
           />
           <EngagementTierCard
             badge="Partner"
@@ -181,6 +187,7 @@ function Diagnostic() {
             description="Some visions take longer than a project. We work with a select few founders as their long-term operational partner."
             ctaLabel="Apply to partner"
             onCtaClick={() => navigate('/book')}
+            highlight
           />
         </div>
       </section>

@@ -1,31 +1,55 @@
 # InsightCTRL Website
 
-Production site for InsightCTRL — an operational advisory firm for founders, business owners, and growing organisations in Nigeria.
+Marketing site and diagnostic tool for InsightCTRL, an operational advisory firm based in Port Harcourt, Nigeria.
 
 ## Stack
 
-- React + Vite
-- Tailwind CSS (v3, classic config)
-- Framer Motion
+- Vite + React 19
+- Tailwind CSS v3 (pinned — do not upgrade to v4, it drops `tailwind.config.js`)
+- Framer Motion for all animation and transitions
 - React Router v6
 
-## Development
+## Getting started
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Build
-
-```bash
-npm run build
-```
+Other scripts: `npm run build`, `npm run preview`, `npm run lint` (oxlint).
 
 ## Structure
 
-See `src/components` for the shared component library, `src/pages` for routed pages, `src/data/diagnosticStages.js` for the Operational Audit content, and `src/constants/links.js` for all external URLs (Tally form, social links, email).
+- `src/pages/` — one file per route: Home, About, Diagnostic, Projects, Thinking, Book
+- `src/components/` — shared UI, including the five animated visuals (`HeroArc`, `ChaosToArc`, `DiagnosticGauge`, `BlueprintGrid`, `ThinkPieceSkeletons`)
+- `src/data/diagnosticStages.js` — the seven-stage diagnostic content (questions, scoring, result copy)
+- `src/hooks/useTheme.jsx` — dark/light mode, persisted to `localStorage`, defaults to dark
+- `src/hooks/useSubstackFeed.js` — fetches and parses the Substack RSS feed for the Thinking page, with an 8s timeout and an allorigins proxy fallback (the direct feed request can be blocked by CORS depending on host)
+- `src/constants/links.js` — Tally form URLs, social links, Substack RSS URL, contact email
+- `scripts/shot.mjs` — Puppeteer screenshot utility for visual QA; see flags at the top of the file (`SHOT_WIDTH`, `SHOT_HEIGHT`, `SHOT_THEME`, `SHOT_MOCK_FEED`, `SHOT_HANG_FEED`)
 
-## Status
+## Theming
 
-Phase 1 (foundation) complete: scaffold, Tailwind/Framer Motion/React Router installed, brand tokens, full component library, routing, placeholder page content.
+Colors, borders, and other design tokens are CSS custom properties in `src/index.css`, keyed on `[data-theme="dark"]` / `[data-theme="light"]` and mapped to Tailwind color names in `tailwind.config.js`. A pre-paint script in `index.html` reads the stored theme before first render so there's no flash.
+
+## Fonts
+
+Satoshi (variable weight) is self-hosted at `public/fonts/Satoshi-Variable.woff2` and preloaded in `index.html`. No other font should be introduced.
+
+## Pre-launch checklist
+
+- [x] Tally form URL wired into `IntakeButton` via `constants/links.js`
+- [x] Social links verified (X, LinkedIn, Substack)
+- [x] Substack RSS confirmed working, with proxy fallback for CORS failures
+- [x] Mobile nav tested at 375px
+- [x] Logo renders correctly in nav (both themes) and favicon
+- [ ] Chibueze to review and approve final copy on all pages
+- [ ] Deploy: push to GitHub, connect to Vercel, share `insightctrl.vercel.app`
+
+## Post-launch (not in scope yet)
+
+- Custom domain (insightctrlhq.com)
+- Google Workspace email aligned to the domain
+- Rereandco full case study
+- SEO meta tags / Open Graph images per page
+- Privacy-first analytics (Plausible or similar)
