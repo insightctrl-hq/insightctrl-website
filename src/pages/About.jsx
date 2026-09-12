@@ -1,3 +1,5 @@
+import ChaosToArc from '../components/ChaosToArc'
+
 const TEAM = [
   {
     name: 'Chibueze Obunadike',
@@ -12,15 +14,21 @@ const TEAM = [
 function About() {
   return (
     <div className="container-content">
-      <section className="py-20">
-        <p className="text-eyebrow">Who we are</p>
-        <h1 className="mt-5 max-w-[38rem] text-section-headline">
-          Vision builders are the future of Africa. Running the business behind the vision is
-          a different skill. We take care of the structure so you can do what you do best.
-        </h1>
-        <p className="mt-5 max-w-[36rem] text-body">
-          Insight into what is broken. CTRL over how it gets fixed.
-        </p>
+      <section className="grid items-center gap-x-10 py-12 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <div>
+          <p className="text-eyebrow">Who we are</p>
+          <h1 className="mt-5 text-section-headline">
+            Vision builders are the future of Africa. Running the business behind the vision is
+            a different skill. We take care of the structure so you can do what you do best.
+          </h1>
+          <p className="mt-5 max-w-[32rem] text-body">
+            Insight into what is broken. CTRL over how it gets fixed.
+          </p>
+        </div>
+
+        <div className="hidden lg:block">
+          <ChaosToArc />
+        </div>
       </section>
 
       <section className="section-divider py-20">

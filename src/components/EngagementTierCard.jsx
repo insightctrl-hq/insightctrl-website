@@ -12,10 +12,16 @@ function EngagementTierCard({
   highlight = false,
 }) {
   return (
-    <Card highlight={highlight} className="flex h-full flex-col">
+    <Card className="relative flex h-full flex-col overflow-hidden">
+      {highlight && (
+        <span
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 h-[2px] bg-brand-gradient"
+        />
+      )}
       {badge && (
         <div className="mb-5">
-          <Badge label={badge} variant={highlight ? 'pro' : 'default'} />
+          <Badge label={badge} />
         </div>
       )}
       <h3 className="text-[17px] font-semibold tracking-[-0.01em] text-text-primary">{title}</h3>
@@ -25,12 +31,7 @@ function EngagementTierCard({
           {price}
         </p>
       )}
-      <Button
-        label={ctaLabel}
-        onClick={onCtaClick}
-        variant={highlight ? 'primary' : 'outline'}
-        className="mt-5 w-full"
-      />
+      <Button label={ctaLabel} onClick={onCtaClick} variant="outline" className="mt-5 w-full" />
     </Card>
   )
 }

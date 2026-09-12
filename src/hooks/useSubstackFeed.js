@@ -45,10 +45,20 @@ function parseFeed(xmlText) {
   })
 }
 
+// The allorigins proxy regularly hangs. Without a bound the page would sit on its
+// loading state forever, so cap each attempt and fall through to the empty state.
+const REQUEST_TIMEOUT_MS = 8000
+
 async function fetchFeed(url) {
-  const response = await fetch(url)
-  if (!response.ok) throw new Error(`Feed request failed: ${response.status}`)
-  return parseFeed(await response.text())
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
+  try {
+    const response = await fetch(url, { signal: controller.signal })
+    if (!response.ok) throw new Error(`Feed request failed: ${response.status}`)
+    return parseFeed(await response.text())
+  } finally {
+    clearTimeout(timer)
+  }
 }
 
 export function useSubstackFeed() {

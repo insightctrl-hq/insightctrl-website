@@ -22,9 +22,8 @@ function RotatingWord({ words, className = '' }) {
         <motion.span
           key={words[index]}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.4, ease: 'easeInOut' }}
+          animate={{ opacity: 1, transition: { duration: 0.35, delay: 0.22, ease: 'easeOut' } }}
+          exit={{ opacity: 0, transition: { duration: 0.22, ease: 'easeIn' } }}
           className="gradient-text absolute left-0 top-0 whitespace-nowrap"
         >
           {words[index]}

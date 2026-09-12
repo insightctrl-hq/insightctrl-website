@@ -10,7 +10,7 @@ function ThinkPieceCard({ title, date, excerpt, url }) {
       <h3 className="mt-3 text-[17px] font-semibold leading-[1.35] tracking-[-0.01em] text-text-primary">
         {title}
       </h3>
-      <p className="mt-2 flex-1 text-body">{excerpt}</p>
+      <p className="mt-2 line-clamp-3 flex-1 text-body">{excerpt}</p>
       <span className="mt-5 text-[13px] font-medium text-accent-cyan">Read on Substack</span>
     </a>
   )
