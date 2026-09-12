@@ -1,6 +1,7 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
 import Diagnostic from './pages/Diagnostic'
 import About from './pages/About'
@@ -13,6 +14,7 @@ function App() {
 
   return (
     <div className="flex min-h-screen flex-col bg-bg-primary">
+      <ScrollToTop />
       <Nav />
       <main className="flex-1 pt-16">
         <div key={location.pathname} className="animate-page-in">
