@@ -24,7 +24,8 @@ Other scripts: `npm run build`, `npm run preview`, `npm run lint` (oxlint).
 - `src/components/` — shared UI, including the five animated visuals (`HeroArc`, `ChaosToArc`, `DiagnosticGauge`, `BlueprintGrid`, `ThinkPieceSkeletons`)
 - `src/data/diagnosticStages.js` — the seven-stage diagnostic content (questions, scoring, result copy)
 - `src/hooks/useTheme.jsx` — dark/light mode, persisted to `localStorage`, defaults to dark
-- `src/hooks/useSubstackFeed.js` — fetches and parses the Substack RSS feed for the Thinking page, with an 8s timeout and an allorigins proxy fallback (the direct feed request can be blocked by CORS depending on host)
+- `src/hooks/useSubstackFeed.js` — fetches and parses the Substack RSS feed for the Thinking page via `/api/substack-feed`, with an 8s timeout that falls through to the empty state
+- `api/substack-feed.js` — Vercel serverless function that fetches the Substack feed server-side, since Substack's feed endpoint doesn't send CORS headers and can't be fetched directly from the browser
 - `src/constants/links.js` — Tally form URLs, social links, Substack RSS URL, contact email
 - `scripts/shot.mjs` — Puppeteer screenshot utility for visual QA; see flags at the top of the file (`SHOT_WIDTH`, `SHOT_HEIGHT`, `SHOT_THEME`, `SHOT_MOCK_FEED`, `SHOT_HANG_FEED`)
 

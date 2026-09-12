@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { SUBSTACK_RSS_URL } from '../constants/links'
 
-const PROXY_URL = `https://api.allorigins.win/raw?url=${encodeURIComponent(SUBSTACK_RSS_URL)}`
+const FEED_ENDPOINT = '/api/substack-feed'
 const MAX_POSTS = 5
 const EXCERPT_LENGTH = 120
 
@@ -45,8 +45,8 @@ function parseFeed(xmlText) {
   })
 }
 
-// The allorigins proxy regularly hangs. Without a bound the page would sit on its
-// loading state forever, so cap each attempt and fall through to the empty state.
+// Bound the request so a slow upstream doesn't leave the page on its loading
+// state forever — fall through to the empty state instead.
 const REQUEST_TIMEOUT_MS = 8000
 
 async function fetchFeed(url) {
@@ -71,15 +71,10 @@ export function useSubstackFeed() {
 
     async function load() {
       try {
-        const direct = await fetchFeed(SUBSTACK_RSS_URL)
-        if (!cancelled) setPosts(direct)
-      } catch {
-        try {
-          const proxied = await fetchFeed(PROXY_URL)
-          if (!cancelled) setPosts(proxied)
-        } catch (proxyErr) {
-          if (!cancelled) setError(proxyErr)
-        }
+        const posts = await fetchFeed(FEED_ENDPOINT)
+        if (!cancelled) setPosts(posts)
+      } catch (err) {
+        if (!cancelled) setError(err)
       } finally {
         if (!cancelled) setLoading(false)
       }
