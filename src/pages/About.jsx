@@ -43,6 +43,12 @@ function About() {
           chaos to founder control. Every visible problem in a business traces back to a broken
           earlier stage. We find that stage and build from there.
         </p>
+        <Link
+          to="/thinking"
+          className="mt-5 inline-block text-[13px] font-medium text-accent-cyan transition-colors hover:text-text-primary"
+        >
+          Learn more →
+        </Link>
       </section>
 
       <section className="section-divider py-20">
