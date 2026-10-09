@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import ChaosToArc from '../components/ChaosToArc'
-import ChaosToCtrl from '../components/ChaosToCtrl'
 import { WORST_TEAM, pickFixture, useDataMode } from '../dev/worstCase'
 
 const TEAM = [
@@ -39,7 +38,21 @@ function About() {
         </div>
       </section>
 
-      <ChaosToCtrl />
+      <section className="section-divider pb-20 pt-6">
+        <p className="text-eyebrow">Our framework</p>
+        <h2 className="mt-5 text-section-headline">From Chaos to CTRL.</h2>
+        <p className="mt-5 max-w-[36rem] text-body">
+          A seven-stage operational engineering sequence that moves a business from structural
+          chaos to founder control. Every visible problem in a business traces back to a broken
+          earlier stage. We find that stage and build from there.
+        </p>
+        <Link
+          to="/thinking"
+          className="mt-5 inline-block text-[0.8125rem] font-medium text-accent-cyan transition-colors hover:text-text-primary"
+        >
+          Learn more →
+        </Link>
+      </section>
 
       <section className="section-divider py-20">
         <p className="text-eyebrow">The team</p>
