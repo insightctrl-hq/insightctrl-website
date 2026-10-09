@@ -1,26 +1,12 @@
 import CaseStudyCard from '../components/CaseStudyCard'
 import BlueprintGrid from '../components/BlueprintGrid'
+import { WORST_PROJECTS, pickFixture, useDataMode } from '../dev/worstCase'
+import { PROJECTS } from '../data/projects'
 
-const PROJECTS = [
-  {
-    client: 'Rereandco',
-    industry: 'Hospitality',
-    status: 'Live',
-    engagementType: 'Full Build',
-    description:
-      'A Port Harcourt hospitality brand rebuilt from operational ground up. Delivered full infrastructure design: hiring architecture, financial controls, product system, and operating rhythm. A business that now runs on structure, not on the founder.',
-  },
-  {
-    client: '8Wings',
-    industry: 'Logistics and delivery',
-    status: 'Live',
-    engagementType: 'Full Build',
-    description:
-      'A logistics and delivery business built for scale from day one. Designed the complete operational structure and business model: service architecture, delivery systems, pricing logic, and the operational framework to carry it forward.',
-  },
-]
 
 function Projects() {
+  const projects = pickFixture(useDataMode(), PROJECTS, WORST_PROJECTS)
+
   return (
     <div className="container-content">
       <section className="relative overflow-hidden py-14">
@@ -33,13 +19,15 @@ function Projects() {
         </div>
       </section>
 
-      <section className="section-divider py-20">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {PROJECTS.map((project) => (
-            <CaseStudyCard key={project.client} {...project} />
-          ))}
-        </div>
-      </section>
+      {projects.length > 0 && (
+        <section className="section-divider py-20">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {projects.map(({ home: _home, ...project }) => (
+              <CaseStudyCard key={project.client} {...project} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }

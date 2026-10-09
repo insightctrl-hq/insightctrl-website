@@ -1,8 +1,18 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
+  // hover: only applies on devices with a real pointer, so taps on phones don't
+  // leave borders stuck in their hover colour
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     extend: {
+      // The stock curves are too weak to feel intentional
+      transitionTimingFunction: {
+        out: 'cubic-bezier(0.23, 1, 0.32, 1)',
+        'in-out': 'cubic-bezier(0.77, 0, 0.175, 1)',
+      },
       colors: {
         'bg-primary': 'var(--bg-primary)',
         'bg-surface': 'var(--bg-surface)',
@@ -16,6 +26,8 @@ export default {
         'accent-cyan': 'var(--accent-cyan)',
         success: 'var(--success)',
         pending: 'var(--pending)',
+        warning: 'var(--warning)',
+        danger: 'var(--danger)',
       },
       fontFamily: {
         sans: ['Satoshi', 'system-ui', '-apple-system', 'sans-serif'],

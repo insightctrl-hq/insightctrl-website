@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { SUBSTACK_RSS_URL } from '../constants/links'
 
 const FEED_ENDPOINT = '/api/substack-feed'
-const MAX_POSTS = 5
+const MAX_POSTS = 4
 const EXCERPT_LENGTH = 120
 
 function stripHtml(html) {
@@ -28,7 +28,8 @@ function parseFeed(xmlText) {
   const items = [...doc.querySelectorAll('item')].slice(0, MAX_POSTS)
 
   return items.map((item) => {
-    const title = item.querySelector('title')?.textContent?.trim() ?? 'Untitled'
+    // || rather than ??: an empty <title> is as useless as a missing one
+    const title = item.querySelector('title')?.textContent?.trim() || 'Untitled'
     const link = item.querySelector('link')?.textContent?.trim() ?? SUBSTACK_RSS_URL
     const pubDate = item.querySelector('pubDate')?.textContent?.trim() ?? ''
     const rawDescription =

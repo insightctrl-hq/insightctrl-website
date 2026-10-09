@@ -5,11 +5,11 @@ function CaseStudyCard({ status, client, industry, description, engagementType }
   return (
     <Card className="flex h-full flex-col">
       <div className="flex items-start justify-between gap-4">
-        <div>
-          <h3 className="text-[20px] font-semibold tracking-[-0.01em] text-text-primary">
+        <div className="min-w-0">
+          <h3 className="break-words text-[1.25rem] font-semibold tracking-[-0.01em] text-text-primary">
             {client}
           </h3>
-          {industry && <p className="mt-1 text-[13px] text-text-muted">{industry}</p>}
+          {industry && <p className="mt-1 text-[0.8125rem] text-text-muted">{industry}</p>}
         </div>
         {status && <Badge label={status} variant="success" />}
       </div>

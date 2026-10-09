@@ -25,6 +25,8 @@
   --accent-cyan: #06B6D4;
   --success: #10B981;
   --pending: #818CF8;
+  --warning: #F59E0B;
+  --danger: #EF4444;
 }
 
 [data-theme='light'] {
@@ -41,6 +43,29 @@
   --accent-cyan: #06B6D4;
   --success: #059669;
   --pending: #6366F1;
+  --warning: #D97706;
+  --danger: #DC2626;
+}
+
+/* Printing always uses the light palette: browsers drop background colours when
+   printing, so dark-mode text would come out white on white paper. */
+@media print {
+  :root,
+  [data-theme='dark'],
+  [data-theme='light'] {
+    --bg-primary: #FFFFFF;
+    --bg-surface: #FFFFFF;
+    --bg-elevated: #FFFFFF;
+    --border: #CBD5E1;
+    --border-accent: #94A3B8;
+    --border-width: 1px;
+    --text-primary: #0A0F1E;
+    --text-secondary: #475569;
+    --text-muted: #667085;
+    --accent-cyan: #0891B2;
+    --warning: #D97706;
+    --danger: #DC2626;
+  }
 }
 
 * {
@@ -82,17 +107,40 @@ a {
 }
 
 .animate-page-in {
-  animation: page-fade-in 0.2s ease-out;
+  animation: page-fade-in 0.2s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .animate-logo-draw {
-  animation: logo-draw-in 0.6s ease-out;
+  animation: logo-draw-in 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-page-in,
   .animate-logo-draw {
     animation: none;
+  }
+}
+
+/* Translucent nav: page content scrolls underneath a blurred navy layer instead of
+   being cut off by an opaque strip. Falls back to solid wherever blur is unsupported
+   or the visitor has asked for less transparency or more contrast. */
+.nav-material {
+  background-color: var(--bg-primary);
+}
+
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .nav-material {
+    background-color: color-mix(in srgb, var(--bg-primary) 72%, transparent);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .nav-material {
+    background-color: var(--bg-primary);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 }
 
@@ -110,19 +158,19 @@ a {
   }
 
   .text-hero {
-    @apply text-[40px] font-bold leading-[1.05] tracking-[-0.02em] text-text-primary md:text-[64px];
+    @apply text-[2.5rem] font-bold leading-[1.05] tracking-[-0.02em] text-text-primary md:text-[4rem];
   }
 
   .text-section-headline {
-    @apply text-[36px] font-semibold leading-[1.2] tracking-[-0.01em] text-text-primary;
+    @apply text-[2.25rem] font-semibold leading-[1.2] tracking-[-0.01em] text-text-primary;
   }
 
   .text-body {
-    @apply text-[14px] font-normal leading-[1.75] text-text-secondary;
+    @apply text-[0.875rem] font-normal leading-[1.75] text-text-secondary;
   }
 
   .text-eyebrow {
-    @apply text-[11px] font-medium normal-case tracking-[0.08em] text-text-muted;
+    @apply text-[0.6875rem] font-medium normal-case tracking-[0.08em] text-text-muted;
   }
 
   .card {

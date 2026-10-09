@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 import ChaosToArc from '../components/ChaosToArc'
+import ChaosToCtrl from '../components/ChaosToCtrl'
+import { WORST_TEAM, pickFixture, useDataMode } from '../dev/worstCase'
 
 const TEAM = [
   {
@@ -13,6 +15,8 @@ const TEAM = [
 ]
 
 function About() {
+  const team = pickFixture(useDataMode(), TEAM, WORST_TEAM)
+
   return (
     <div className="container-content">
       <section className="grid items-center gap-x-10 pb-6 pt-12 lg:grid-cols-[minmax(0,1fr)_300px]">
@@ -24,7 +28,7 @@ function About() {
           </h1>
           <Link
             to="/thinking"
-            className="mt-5 inline-block text-[13px] font-medium text-accent-cyan transition-colors hover:text-text-primary"
+            className="mt-5 inline-block text-[0.8125rem] font-medium text-accent-cyan transition-colors hover:text-text-primary"
           >
             Learn more →
           </Link>
@@ -35,31 +39,17 @@ function About() {
         </div>
       </section>
 
-      <section className="section-divider pb-20 pt-6">
-        <p className="text-eyebrow">Our framework</p>
-        <h2 className="mt-5 text-section-headline">From Chaos to CTRL.</h2>
-        <p className="mt-5 max-w-[36rem] text-body">
-          A seven-stage operational engineering sequence that moves a business from structural
-          chaos to founder control. Every visible problem in a business traces back to a broken
-          earlier stage. We find that stage and build from there.
-        </p>
-        <Link
-          to="/thinking"
-          className="mt-5 inline-block text-[13px] font-medium text-accent-cyan transition-colors hover:text-text-primary"
-        >
-          Learn more →
-        </Link>
-      </section>
+      <ChaosToCtrl />
 
       <section className="section-divider py-20">
         <p className="text-eyebrow">The team</p>
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
-          {TEAM.map((member) => (
+          {team.map((member) => (
             <div key={member.name} className="card">
-              <h3 className="text-[17px] font-semibold tracking-[-0.01em] text-text-primary">
+              <h3 className="text-[1.0625rem] font-semibold tracking-[-0.01em] text-text-primary">
                 {member.name}
               </h3>
-              <p className="mt-2 text-body">{member.bio}</p>
+              {member.bio && <p className="mt-2 text-body">{member.bio}</p>}
             </div>
           ))}
         </div>

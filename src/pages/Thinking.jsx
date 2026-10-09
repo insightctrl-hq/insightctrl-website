@@ -3,38 +3,42 @@ import ThinkPieceCard from '../components/ThinkPieceCard'
 import ThinkPieceSkeletons from '../components/ThinkPieceSkeletons'
 import { useSubstackFeed } from '../hooks/useSubstackFeed'
 import { SUBSTACK_URL } from '../constants/links'
+import { WORST_POSTS, pickFixture, useDataMode } from '../dev/worstCase'
 
 function Thinking() {
-  const { posts, loading } = useSubstackFeed()
+  const feed = useSubstackFeed()
+  const mode = useDataMode()
+  const posts = pickFixture(mode, feed.posts, WORST_POSTS)
+  const loading = mode === 'demo' && feed.loading
   const featured = posts.slice(0, 4)
 
   return (
     <div className="container-content">
-      <section className="grid items-center gap-x-10 gap-y-12 py-12 lg:grid-cols-[minmax(0,1fr)_340px]">
-        <div>
-          <p className="text-eyebrow">Our Insights</p>
-          <h1 className="mt-5 text-hero">Ideas that drive better businesses.</h1>
-          <a
-            href={SUBSTACK_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 inline-block text-[13px] font-medium text-accent-cyan transition-colors hover:text-text-primary"
-          >
-            Full archive on Substack
-          </a>
-        </div>
+      <section className="py-12">
+        <p className="text-eyebrow">Our Insights</p>
+        <h1 className="mt-5 text-hero">Ideas that drive better businesses.</h1>
+        <a
+          href={SUBSTACK_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-6 inline-block text-[0.8125rem] font-medium text-accent-cyan transition-colors hover:text-text-primary"
+        >
+          Full archive on Substack
+        </a>
+      </section>
 
-        <div>
+      {(loading || posts.length > 0) && (
+        <section className="section-divider py-20">
           {loading ? (
             <ThinkPieceSkeletons />
           ) : (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {featured.map((post, i) => (
                 <motion.div
                   key={post.url}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.4, ease: 'easeOut', delay: i * 0.08 }}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1], delay: i * 0.05 }}
                 >
                   <ThinkPieceCard
                     title={post.title}
@@ -46,8 +50,8 @@ function Thinking() {
               ))}
             </div>
           )}
-        </div>
-      </section>
+        </section>
+      )}
 
       {!loading && posts.length === 0 && (
         <section className="section-divider py-20">

@@ -4,6 +4,7 @@ import EngagementTierCard from '../components/EngagementTierCard'
 import CaseStudyCard from '../components/CaseStudyCard'
 import RotatingWord from '../components/RotatingWord'
 import HeroArc from '../components/HeroArc'
+import { PROJECTS } from '../data/projects'
 
 const ROTATING_WORDS = [
   'Strategy',
@@ -79,25 +80,14 @@ function Home() {
       <section className="section-divider py-20">
         <p className="text-eyebrow">Projects</p>
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
-          <CaseStudyCard
-            status="Live"
-            client="Rereandco"
-            industry="Hospitality"
-            engagementType="Full Build"
-            description="A Port Harcourt hospitality brand rebuilt from operational ground up. Delivered full infrastructure design: hiring architecture, financial controls, product system, and operating rhythm."
-          />
-          <CaseStudyCard
-            status="Live"
-            client="8Wings"
-            industry="Logistics"
-            engagementType="Full Build"
-            description="A logistics and delivery business built for scale from day one. Designed the complete operational structure and business model: service architecture, delivery systems, pricing logic."
-          />
+          {PROJECTS.slice(0, 2).map(({ home, ...project }) => (
+            <CaseStudyCard key={project.client} {...project} {...home} />
+          ))}
         </div>
         <button
           type="button"
           onClick={() => navigate('/projects')}
-          className="mt-8 text-[13px] font-medium text-accent-cyan transition-colors hover:text-text-primary"
+          className="mt-8 text-[0.8125rem] font-medium text-accent-cyan transition-colors hover:text-text-primary"
         >
           All projects
         </button>

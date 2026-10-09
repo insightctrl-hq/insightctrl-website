@@ -4,7 +4,7 @@ const CARDS = [0, 1, 2, 3]
 
 function ThinkPieceSkeletons() {
   return (
-    <div className="grid grid-cols-2 gap-4" aria-hidden="true">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2" aria-hidden="true">
       {CARDS.map((i) => (
         <motion.div
           key={i}

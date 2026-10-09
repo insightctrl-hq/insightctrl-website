@@ -4,13 +4,13 @@ import { SOCIAL_LINKS, CONTACT_EMAIL } from '../constants/links'
 import { useTheme } from '../hooks/useTheme'
 
 const LINK_CLASS =
-  'text-[13px] text-text-secondary transition-colors hover:text-text-primary'
+  'text-[0.8125rem] text-text-secondary transition-colors hover:text-text-primary'
 
 function Footer() {
   const { theme } = useTheme()
 
   return (
-    <footer className="border-t border-border">
+    <footer className="border-t border-border print:hidden">
       <div className="container-content grid grid-cols-1 gap-12 py-16 md:grid-cols-3">
         <div>
           <img
@@ -59,7 +59,7 @@ function Footer() {
 
       <div className="border-t border-border">
         <div className="container-content py-6">
-          <p className="text-[11px] tracking-[0.08em] text-text-muted">
+          <p className="text-[0.6875rem] tracking-[0.08em] text-text-muted">
             © {new Date().getFullYear()} InsightCTRL
           </p>
         </div>

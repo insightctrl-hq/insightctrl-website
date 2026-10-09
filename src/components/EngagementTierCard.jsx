@@ -24,10 +24,10 @@ function EngagementTierCard({
           <Badge label={badge} />
         </div>
       )}
-      <h3 className="text-[17px] font-semibold tracking-[-0.01em] text-text-primary">{title}</h3>
+      <h3 className="text-[1.0625rem] font-semibold tracking-[-0.01em] text-text-primary">{title}</h3>
       <p className="mt-2 flex-1 text-body">{description}</p>
       {price && (
-        <p className="mt-5 border-t border-border pt-5 text-[20px] font-semibold tracking-[-0.01em] text-text-primary">
+        <p className="mt-5 border-t border-border pt-5 text-[1.25rem] font-semibold tracking-[-0.01em] text-text-primary">
           {price}
         </p>
       )}

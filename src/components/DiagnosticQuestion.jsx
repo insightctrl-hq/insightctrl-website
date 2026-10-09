@@ -1,8 +1,15 @@
 import { motion, useIsPresent } from 'framer-motion'
 
+// direction is 1 when moving forward and -1 when going back, so a question
+// returns along the same path it left by.
+const VARIANTS = {
+  enter: (direction) => ({ opacity: 0, x: 24 * direction }),
+  center: { opacity: 1, x: 0 },
+  exit: (direction) => ({ opacity: 0, x: -24 * direction }),
+}
+
 function DiagnosticQuestion({
-  questionNumber,
-  total,
+  custom = 1,
   questionText,
   options,
   onAnswer,
@@ -13,24 +20,15 @@ function DiagnosticQuestion({
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 24 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -24 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
+      custom={custom}
+      variants={VARIANTS}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
       className={`w-full ${isPresent ? '' : 'pointer-events-none'}`}
     >
-      <p className="text-eyebrow">
-        Question {questionNumber} of {total}
-      </p>
-
-      <div className="mt-4 h-px w-full bg-border">
-        <div
-          className="h-px bg-accent-blue transition-all duration-300"
-          style={{ width: `${(questionNumber / total) * 100}%` }}
-        />
-      </div>
-
-      <h2 className="mt-10 text-[28px] font-semibold leading-[1.25] tracking-[-0.01em] text-text-primary">
+      <h2 className="text-[1.75rem] font-semibold leading-[1.25] tracking-[-0.01em] text-text-primary">
         {questionText}
       </h2>
 
@@ -40,7 +38,7 @@ function DiagnosticQuestion({
             key={option.label}
             type="button"
             onClick={() => onAnswer(option)}
-            className="rounded-xl border border-border bg-bg-surface px-5 py-4 text-left text-[14px] leading-[1.6] text-text-primary transition-colors duration-200 hover:border-border-accent"
+            className="rounded-xl border border-border bg-bg-surface px-5 py-4 text-left text-[0.875rem] leading-[1.6] text-text-primary transition-[border-color,transform] duration-200 ease-out hover:border-border-accent active:scale-[0.985] active:duration-100"
           >
             {option.label}
           </button>
@@ -51,7 +49,7 @@ function DiagnosticQuestion({
         <button
           type="button"
           onClick={onBack}
-          className="mt-8 text-[13px] text-text-secondary transition-colors hover:text-text-primary"
+          className="mt-8 text-[0.8125rem] text-text-secondary transition-colors hover:text-text-primary"
         >
           Back
         </button>

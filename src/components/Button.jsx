@@ -4,9 +4,9 @@ const VARIANT_CLASSES = {
 }
 
 const SIZE_CLASSES = {
-  sm: 'px-4 py-2 text-[13px]',
-  md: 'px-5 py-3 text-[13px]',
-  lg: 'px-6 py-3.5 text-[14px]',
+  sm: 'px-4 py-2 text-[0.8125rem]',
+  md: 'px-5 py-3 text-[0.8125rem]',
+  lg: 'px-6 py-3.5 text-[0.875rem]',
 }
 
 function Button({
@@ -21,7 +21,7 @@ function Button({
     <button
       type={type}
       onClick={onClick}
-      className={`inline-flex items-center justify-center rounded-lg font-medium tracking-[-0.01em] transition-colors duration-200 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
+      className={`inline-flex items-center justify-center rounded-lg font-medium transition-[color,border-color,transform] duration-200 ease-out active:scale-[0.97] active:duration-100 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
     >
       {label}
     </button>

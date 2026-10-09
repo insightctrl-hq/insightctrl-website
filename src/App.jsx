@@ -8,6 +8,7 @@ import About from './pages/About'
 import Projects from './pages/Projects'
 import Thinking from './pages/Thinking'
 import Book from './pages/Book'
+import DataToggle from './dev/DataToggle'
 
 function App() {
   const location = useLocation()
@@ -16,7 +17,7 @@ function App() {
     <div className="flex min-h-screen flex-col bg-bg-primary">
       <ScrollToTop />
       <Nav />
-      <main className="flex-1 pt-16">
+      <main className="flex-1 pt-16 print:pt-0">
         <div key={location.pathname} className="animate-page-in">
           <Routes location={location}>
             <Route path="/" element={<Home />} />
@@ -29,6 +30,7 @@ function App() {
         </div>
       </main>
       <Footer />
+      {import.meta.env.DEV && <DataToggle />}
     </div>
   )
 }
