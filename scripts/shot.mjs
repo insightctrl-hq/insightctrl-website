@@ -15,7 +15,7 @@ if (targets.length === 0) {
 const width = Number(process.env.SHOT_WIDTH ?? 1440)
 const height = Number(process.env.SHOT_HEIGHT ?? 900)
 const fullPage = process.env.SHOT_FULL === '1'
-const theme = process.env.SHOT_THEME ?? 'dark'
+const theme = process.env.SHOT_THEME ?? 'light'
 
 const browser = await puppeteer.launch({
   executablePath: CHROME,
@@ -66,7 +66,7 @@ try {
       })
     }
     await page.evaluateOnNewDocument((t) => {
-      localStorage.setItem('insightctrl-theme', t)
+      localStorage.setItem('insightctrl-theme-choice', t)
     }, theme)
 
     await page.goto(BASE + route, { waitUntil: 'networkidle2', timeout: 60000 })

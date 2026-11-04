@@ -10,26 +10,9 @@
   font-display: swap;
 }
 
+/* Light is the default. The dark block must stay after it: on <html> both :root and
+   [data-theme='dark'] match with equal specificity, so source order decides. */
 :root,
-[data-theme='dark'] {
-  --bg-primary: #070D1A;
-  --bg-surface: #0D1526;
-  --bg-elevated: #111D35;
-  --border: #1A2540;
-  --border-accent: #243050;
-  --border-width: 0.5px;
-  --text-primary: #F1F5F9;
-  --text-secondary: #94A3B8;
-  --text-muted: #8A93A6;
-  --accent-blue: #2563EB;
-  --accent-cyan: #06B6D4;
-  --accent-link: #06B6D4;
-  --success: #10B981;
-  --pending: #818CF8;
-  --warning: #F59E0B;
-  --danger: #EF4444;
-}
-
 [data-theme='light'] {
   --bg-primary: #FFFFFF;
   --bg-surface: #F8F9FC;
@@ -48,6 +31,25 @@
   --pending: #6366F1;
   --warning: #D97706;
   --danger: #DC2626;
+}
+
+[data-theme='dark'] {
+  --bg-primary: #070D1A;
+  --bg-surface: #0D1526;
+  --bg-elevated: #111D35;
+  --border: #1A2540;
+  --border-accent: #243050;
+  --border-width: 0.5px;
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted: #8A93A6;
+  --accent-blue: #2563EB;
+  --accent-cyan: #06B6D4;
+  --accent-link: #06B6D4;
+  --success: #10B981;
+  --pending: #818CF8;
+  --warning: #F59E0B;
+  --danger: #EF4444;
 }
 
 /* Printing always uses the light palette: browsers drop background colours when

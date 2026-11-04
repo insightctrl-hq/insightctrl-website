@@ -1,6 +1,9 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-const STORAGE_KEY = 'insightctrl-theme'
+// Only an explicit toggle is stored. The key changed when light became the default,
+// because the old key held 'dark' for every past visitor, chosen or not.
+const STORAGE_KEY = 'insightctrl-theme-choice'
+const BROWSER_BAR_COLOR = { light: '#FFFFFF', dark: '#070D1A' }
 const ThemeContext = createContext(null)
 
 function getInitialTheme() {
@@ -10,7 +13,7 @@ function getInitialTheme() {
   } catch {
     // localStorage can throw in private mode or with site data blocked
   }
-  return 'dark'
+  return 'light'
 }
 
 export function ThemeProvider({ children }) {
@@ -18,14 +21,20 @@ export function ThemeProvider({ children }) {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', BROWSER_BAR_COLOR[theme])
+  }, [theme])
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark'
+    setTheme(next)
     try {
-      localStorage.setItem(STORAGE_KEY, theme)
+      localStorage.setItem(STORAGE_KEY, next)
     } catch {
       // preference just will not persist
     }
-  }, [theme])
-
-  const toggleTheme = () => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
+  }
 
   return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>
 }

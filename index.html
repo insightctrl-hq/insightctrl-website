@@ -5,7 +5,7 @@
     <link rel="icon" type="image/png" href="/insightctrl_favicon.png" />
     <link rel="apple-touch-icon" href="/insightctrl_favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#070D1A" />
+    <meta name="theme-color" content="#FFFFFF" />
     <link
       rel="preload"
       href="/fonts/Satoshi-Variable.woff2"
@@ -23,13 +23,13 @@
   </head>
   <body>
     <script>
-      // Set the theme before first paint so a light-mode visitor never sees a dark flash.
+      // Set the theme before first paint so a visitor who chose dark never sees a light flash.
       (function () {
         try {
-          var stored = localStorage.getItem('insightctrl-theme')
-          document.documentElement.setAttribute('data-theme', stored === 'light' ? 'light' : 'dark')
+          var stored = localStorage.getItem('insightctrl-theme-choice')
+          document.documentElement.setAttribute('data-theme', stored === 'dark' ? 'dark' : 'light')
         } catch (e) {
-          document.documentElement.setAttribute('data-theme', 'dark')
+          document.documentElement.setAttribute('data-theme', 'light')
         }
       })()
     </script>
