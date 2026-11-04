@@ -16,14 +16,16 @@ function Button({
   size = 'md',
   type = 'button',
   className = '',
+  arrow = false,
 }) {
   return (
     <button
       type={type}
       onClick={onClick}
-      className={`inline-flex items-center justify-center rounded-lg font-medium transition-[color,border-color,transform] duration-200 ease-out active:scale-[0.97] active:duration-100 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-[color,border-color,transform] duration-200 ease-out active:scale-[0.97] active:duration-100 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
     >
       {label}
+      {arrow && <span aria-hidden="true">→</span>}
     </button>
   )
 }

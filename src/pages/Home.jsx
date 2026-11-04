@@ -25,6 +25,7 @@ function Home() {
             <Button
               label="Start with a diagnosis"
               size="lg"
+              arrow
               onClick={() => navigate('/diagnostic')}
             />
             <Link to="/services" className="text-link">
