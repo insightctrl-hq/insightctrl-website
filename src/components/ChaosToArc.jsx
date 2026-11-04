@@ -32,7 +32,7 @@ const arcPoint = (t, w, h) => {
   }
 }
 
-function ChaosToArc() {
+function ChaosToArc({ className = 'h-[420px]' }) {
   const canvasRef = useRef(null)
   const wrapRef = useRef(null)
   const { theme } = useTheme()
@@ -181,7 +181,7 @@ function ChaosToArc() {
   return (
     <div
       ref={wrapRef}
-      className="h-[420px] w-full"
+      className={`w-full ${className}`}
       role="img"
       aria-label="A scattered cluster resolving into a single continuous arc"
     >
