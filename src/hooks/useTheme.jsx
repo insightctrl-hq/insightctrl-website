@@ -33,3 +33,10 @@ export function ThemeProvider({ children }) {
 export function useTheme() {
   return useContext(ThemeContext)
 }
+
+// Re-scopes the theme for a subtree, so visuals that read the theme in JS match the
+// tokens that a data-theme attribute re-scopes in CSS.
+export function ThemeOverride({ theme, children }) {
+  const context = useContext(ThemeContext)
+  return <ThemeContext.Provider value={{ ...context, theme }}>{children}</ThemeContext.Provider>
+}

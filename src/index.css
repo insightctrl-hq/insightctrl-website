@@ -23,6 +23,7 @@
   --text-muted: #8A93A6;
   --accent-blue: #2563EB;
   --accent-cyan: #06B6D4;
+  --accent-link: #06B6D4;
   --success: #10B981;
   --pending: #818CF8;
   --warning: #F59E0B;
@@ -41,6 +42,8 @@
   --text-muted: #667085;
   --accent-blue: #2563EB;
   --accent-cyan: #06B6D4;
+  /* cyan is ~2.4:1 on white; blue clears 4.5:1 for small link text */
+  --accent-link: #2563EB;
   --success: #059669;
   --pending: #6366F1;
   --warning: #D97706;
@@ -146,7 +149,7 @@ a {
 
 @layer components {
   .container-content {
-    @apply mx-auto w-full max-w-[880px] px-6;
+    @apply mx-auto w-full max-w-[1120px] px-6 lg:px-8;
   }
 
   .section {
@@ -179,6 +182,10 @@ a {
 
   .card-interactive {
     @apply card transition-colors duration-200 hover:border-border-accent;
+  }
+
+  .text-link {
+    @apply inline-flex items-center gap-1.5 text-[0.8125rem] font-medium text-accent-link transition-colors duration-200 hover:text-text-primary;
   }
 
   .gradient-text {

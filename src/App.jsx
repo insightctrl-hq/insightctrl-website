@@ -8,6 +8,7 @@ import About from './pages/About'
 import Projects from './pages/Projects'
 import Thinking from './pages/Thinking'
 import Book from './pages/Book'
+import Services from './pages/Services'
 import DataToggle from './dev/DataToggle'
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
             <Route path="/projects" element={<Projects />} />
             <Route path="/thinking" element={<Thinking />} />
             <Route path="/book" element={<Book />} />
+            <Route path="/services" element={<Services />} />
           </Routes>
         </div>
       </main>

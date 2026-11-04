@@ -93,12 +93,12 @@ function pointAt(distance) {
 // These layers share one head position with different tail lengths instead, which
 // stacks into a trail that falls off behind the moving point.
 const TRAIL_LAYERS = [
-  { length: 150, width: 3, opacity: 0.25, glow: true },
-  { length: 78, width: 2, opacity: 0.4, glow: false },
-  { length: 34, width: 1.5, opacity: 0.9, glow: false },
+  { length: 150, width: 1.5, opacity: 0.2 },
+  { length: 78, width: 1.5, opacity: 0.4 },
+  { length: 34, width: 1.5, opacity: 0.9 },
 ]
 
-function TrailLayer({ progress, length, width, opacity, glow }) {
+function TrailLayer({ progress, length, width, opacity }) {
   // Head sits at `length - dashOffset`, so offsetting by the tail length pins every
   // layer's leading edge to the same point on the path.
   const dashOffset = useTransform(progress, (p) => length - p * CIRCUIT_LEN)
@@ -111,7 +111,6 @@ function TrailLayer({ progress, length, width, opacity, glow }) {
       strokeWidth={width}
       strokeLinecap="round"
       opacity={opacity}
-      filter={glow ? 'url(#blueprint-pulse-glow)' : undefined}
       strokeDasharray={`${length} ${CIRCUIT_LEN - length}`}
       style={{ strokeDashoffset: dashOffset }}
     />
@@ -175,10 +174,6 @@ function BlueprintGrid() {
           <stop offset="0%" stopColor="#2563EB" />
           <stop offset="100%" stopColor="#06B6D4" />
         </linearGradient>
-
-        <filter id="blueprint-pulse-glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="2.5" />
-        </filter>
       </defs>
 
       <rect width="100%" height="100%" fill="url(#blueprint-grid)" />
@@ -211,15 +206,7 @@ function BlueprintGrid() {
           {TRAIL_LAYERS.map((layer) => (
             <TrailLayer key={layer.length} progress={progress} {...layer} />
           ))}
-          <motion.circle
-            cx={headX}
-            cy={headY}
-            r="4.5"
-            fill="url(#blueprint-pulse)"
-            opacity="0.5"
-            filter="url(#blueprint-pulse-glow)"
-          />
-          <motion.circle cx={headX} cy={headY} r="2" fill="url(#blueprint-pulse)" />
+          <motion.circle cx={headX} cy={headY} r="2.5" fill="url(#blueprint-pulse)" />
         </g>
       )}
     </svg>

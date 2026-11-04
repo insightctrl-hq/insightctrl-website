@@ -94,9 +94,6 @@ function HeroArc() {
           <stop offset="0%" stopColor="#2563EB" />
           <stop offset="100%" stopColor="#06B6D4" />
         </linearGradient>
-        <filter id="hero-arc-glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="3" />
-        </filter>
       </defs>
 
       <path
@@ -110,28 +107,15 @@ function HeroArc() {
       />
 
       {length > 0 && (
-        <>
-          <motion.path
-            d={ARC_PATH}
-            fill="none"
-            stroke="url(#hero-arc-pulse)"
-            strokeWidth="3"
-            strokeLinecap="round"
-            filter="url(#hero-arc-glow)"
-            strokeDasharray={`${segment} ${length}`}
-            style={{ strokeDashoffset: dashOffset }}
-            opacity="0.55"
-          />
-          <motion.path
-            d={ARC_PATH}
-            fill="none"
-            stroke="url(#hero-arc-pulse)"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeDasharray={`${segment} ${length}`}
-            style={{ strokeDashoffset: dashOffset }}
-          />
-        </>
+        <motion.path
+          d={ARC_PATH}
+          fill="none"
+          stroke="url(#hero-arc-pulse)"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeDasharray={`${segment} ${length}`}
+          style={{ strokeDashoffset: dashOffset }}
+        />
       )}
 
       {STAGES.map((stage) => (
