@@ -124,7 +124,7 @@ function DiagnosticResult({
             direction.
           </p>
           <Button
-            label="Book Operating Room"
+            label="Book a session"
             onClick={handleBook}
             variant="primary"
             className="mt-6 w-full sm:w-auto"

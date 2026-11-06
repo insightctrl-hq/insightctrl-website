@@ -27,7 +27,7 @@ function Nav() {
     <header className="nav-material fixed top-0 left-0 right-0 z-50 border-b border-border print:hidden">
       <div className="container-content flex h-16 items-center justify-between">
         <Link to="/" onClick={closeMenu} className="flex items-center">
-          <img src={logoSrc} alt="InsightCTRL" className="animate-logo-draw w-[132px]" />
+          <img src={logoSrc} alt="InsightCTRL" className="w-[132px]" />
         </Link>
 
         <nav className="hidden items-center gap-9 md:flex">

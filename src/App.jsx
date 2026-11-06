@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
@@ -12,24 +12,22 @@ import Services from './pages/Services'
 import DataToggle from './dev/DataToggle'
 
 function App() {
-  const location = useLocation()
-
   return (
     <div className="flex min-h-screen flex-col bg-bg-primary">
       <ScrollToTop />
       <Nav />
       <main className="flex-1 pt-16 print:pt-0">
-        <div key={location.pathname} className="animate-page-in">
-          <Routes location={location}>
-            <Route path="/" element={<Home />} />
-            <Route path="/diagnostic" element={<Diagnostic />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/thinking" element={<Thinking />} />
-            <Route path="/book" element={<Book />} />
-            <Route path="/services" element={<Services />} />
-          </Routes>
-        </div>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/diagnostic" element={<Diagnostic />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/insights" element={<Thinking />} />
+          <Route path="/thinking" element={<Navigate to="/insights" replace />} />
+          {/* old pages, kept reachable until Services absorbs them */}
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/book" element={<Book />} />
+        </Routes>
       </main>
       <Footer />
       {import.meta.env.DEV && <DataToggle />}

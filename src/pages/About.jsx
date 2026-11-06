@@ -19,10 +19,6 @@ const TEAM = [
   },
 ]
 
-function Arrow() {
-  return <span aria-hidden="true">→</span>
-}
-
 function About() {
   const team = pickFixture(useDataMode(), TEAM, WORST_TEAM)
 
@@ -37,8 +33,8 @@ function About() {
               Running the business behind the vision is a different skill. We take care of the
               structure so you can do what you do best.
             </p>
-            <Link to="/thinking" className="text-link mt-8">
-              Learn more <Arrow />
+            <Link to="/insights" className="text-link mt-8">
+              Learn more
             </Link>
           </div>
           <ChaosToArc className="h-[240px] lg:h-[420px]" />
@@ -69,8 +65,8 @@ function About() {
             chaos to founder control. Every visible problem in a business traces back to a broken
             earlier stage. We find that stage and build from there.
           </p>
-          <Link to="/thinking" className="text-link mt-6">
-            Learn more <Arrow />
+          <Link to="/insights" className="text-link mt-6">
+            Learn more
           </Link>
         </div>
       </section>

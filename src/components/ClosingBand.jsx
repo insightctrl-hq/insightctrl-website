@@ -1,26 +1,24 @@
-import { Link, useNavigate } from 'react-router-dom'
-import Button from './Button'
+import { Link } from 'react-router-dom'
+import IntakeButton from './IntakeButton'
 import InverseBand from './InverseBand'
 
-function ClosingBand() {
-  const navigate = useNavigate()
+const DEFAULT_SECONDARY = { label: 'Run the free diagnostic', to: '/diagnostic' }
 
+// Both paths through the site (the diagnostic, or the essays) end here, so the
+// primary action is always booking. The secondary link offers the other path.
+function ClosingBand({ secondary = DEFAULT_SECONDARY }) {
   return (
-    <InverseBand className="py-24 md:py-28">
+    <InverseBand className="py-24 md:py-32">
       <div className="container-content">
+        {/* one sentence per line, so the two halves read as a pair */}
         <h2 className="text-balance text-hero">
           <span className="block">Insight into what is broken.</span>
-          <span className="block text-accent-link">CTRL over how it gets fixed.</span>
+          <span className="block">CTRL over how it gets fixed.</span>
         </h2>
         <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-          <Button
-            label="Start with a diagnosis"
-            size="lg"
-            arrow
-            onClick={() => navigate('/diagnostic')}
-          />
-          <Link to="/book" className="text-link">
-            Book a session <span aria-hidden="true">→</span>
+          <IntakeButton label="Book a session" size="lg" />
+          <Link to={secondary.to} className="text-link">
+            {secondary.label}
           </Link>
         </div>
       </div>

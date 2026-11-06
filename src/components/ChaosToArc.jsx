@@ -44,12 +44,8 @@ function ChaosToArc({ className = 'h-[420px]' }) {
       progress.set(1)
       return undefined
     }
-    const controls = animate(progress, [0, 1, 1, 0], {
-      duration: 8,
-      times: [0, 0.375, 0.5, 1],
-      ease: ['easeInOut', 'linear', 'easeInOut'],
-      repeat: Infinity,
-    })
+    // Plays once and stays resolved: chaos becomes CTRL and does not fall back.
+    const controls = animate(progress, 1, { duration: 3.2, ease: 'easeInOut', delay: 0.4 })
     return () => controls.stop()
   }, [progress])
 
