@@ -1,27 +1,15 @@
 import { Link } from 'react-router-dom'
-import Badge from '../components/Badge'
 import ChaosToArc from '../components/ChaosToArc'
 import ClosingBand from '../components/ClosingBand'
-import { PRODUCTS } from '../data/products'
-import { WORST_TEAM, pickFixture, useDataMode } from '../dev/worstCase'
 
 // From the ABOUT INSIGHTCTRL doc.
 const VALUES = ['Vision', 'Innovation', 'Creativity', 'Insight', 'Strategy', 'Execution']
 
-const TEAM = [
-  {
-    name: 'Chibueze Obunadike',
-    bio: 'Operational strategy, systems design, and client engagement. Leads diagnostic architecture and the Chaos to CTRL Framework development.',
-  },
-  {
-    name: 'Chukwuebuka Abah',
-    bio: 'Operational review, strategy pressure-testing, and engagement oversight. Co-leads all client engagements.',
-  },
-]
+// The team section is out for now (user's call, Nov 2026). Bios, if it returns:
+// Chibueze Obunadike: Operational strategy, systems design, and client engagement.
+// Chukwuebuka Abah: Operational review, strategy pressure-testing, and engagement oversight.
 
 function About() {
-  const team = pickFixture(useDataMode(), TEAM, WORST_TEAM)
-
   return (
     <>
       <section className="container-content pb-16 pt-14 md:pt-20">
@@ -68,41 +56,6 @@ function About() {
           <Link to="/insights" className="text-link mt-6">
             Learn more
           </Link>
-        </div>
-      </section>
-
-      <section className="container-content">
-        <div className="grid gap-16 border-t border-border py-24 lg:grid-cols-2 lg:gap-12">
-          <div>
-            <p className="text-eyebrow">The team</p>
-            <ul className="mt-8 border-t border-border">
-              {team.map((member) => (
-                <li key={member.name} className="border-b border-border py-6">
-                  <h3 className="break-words text-[1.25rem] font-semibold tracking-[-0.01em] text-text-primary">
-                    {member.name}
-                  </h3>
-                  {member.bio && <p className="mt-2 text-body">{member.bio}</p>}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <p className="text-eyebrow">What we're building</p>
-            <ul className="mt-8 border-t border-border">
-              {PRODUCTS.map((product) => (
-                <li key={product.name} className="border-b border-border py-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <h3 className="text-[1.25rem] font-semibold tracking-[-0.01em] text-text-primary">
-                      {product.name}
-                    </h3>
-                    <Badge label={product.status} />
-                  </div>
-                  <p className="mt-2 text-body">{product.description}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
       </section>
 
