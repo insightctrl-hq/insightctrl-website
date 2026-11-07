@@ -2,8 +2,13 @@ import { Link } from 'react-router-dom'
 import ChaosToArc from '../components/ChaosToArc'
 import ClosingBand from '../components/ClosingBand'
 
-// From the ABOUT INSIGHTCTRL doc.
-const VALUES = ['Vision', 'Innovation', 'Creativity', 'Insight', 'Strategy', 'Execution']
+// The six core values were cut: the ABOUT INSIGHTCTRL doc lists them without saying
+// what they mean, so on their own they told a reader nothing. In their place, two
+// beliefs taken from the same doc, close to its own wording. Pending Chibueze's approval.
+const BELIEFS = [
+  'Every business already has chaos inside it. Systems and structure kill chaos.',
+  'Without a system, revenue is the only signal a founder can see. Chaos stays invisible until it kills the business. Structure makes the other signals visible.',
+]
 
 // The team section is out for now (user's call, Nov 2026). Bios, if it returns:
 // Chibueze Obunadike: Operational strategy, systems design, and client engagement.
@@ -33,20 +38,6 @@ function About() {
             <ChaosToArc />
           </div>
         </div>
-
-        <div className="mt-16 border-t border-border pt-6">
-          <p className="text-eyebrow">Core values</p>
-          <ul className="mt-5 grid grid-cols-2 gap-y-4 sm:grid-cols-3 lg:grid-cols-6 lg:divide-x lg:divide-border">
-            {VALUES.map((value) => (
-              <li
-                key={value}
-                className="text-[1rem] font-medium tracking-[-0.01em] text-text-primary lg:px-6 lg:first:pl-0"
-              >
-                {value}
-              </li>
-            ))}
-          </ul>
-        </div>
       </section>
 
       {/* the border sits inside the padding so it spans the content width, not the container */}
@@ -62,6 +53,22 @@ function About() {
           <Link to="/insights" className="text-link mt-6">
             Learn more
           </Link>
+        </div>
+      </section>
+
+      <section className="container-content">
+        <div className="border-t border-border py-24">
+          <h2 className="text-section-headline">How we think</h2>
+          <ul className="mt-12 grid gap-x-16 gap-y-10 md:grid-cols-2">
+            {BELIEFS.map((belief) => (
+              <li
+                key={belief}
+                className="max-w-[30rem] text-[1.375rem] font-medium leading-[1.45] tracking-[-0.01em] text-text-primary"
+              >
+                {belief}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
