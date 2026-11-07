@@ -37,7 +37,16 @@ function stagesFor({ p0, p1, p2, label }) {
   })
 }
 
-const LAYOUTS = Object.fromEntries(
+// Shared with ChaosToArc, whose resolved frame must match this arc exactly.
+export const arcColors = (isLight) => ({
+  line: isLight ? '#1A2540' : '#FFFFFF',
+  lineOpacity: isLight ? 0.18 : 0.14,
+  idle: isLight ? '#667085' : '#8A93A6',
+  activeLabel: isLight ? '#0A0F1E' : '#F1F5F9',
+  dotIdle: isLight ? 'rgba(26,37,64,0.45)' : 'rgba(255,255,255,0.35)',
+})
+
+export const LAYOUTS = Object.fromEntries(
   Object.entries(GEOMETRY).map(([key, g]) => [
     key,
     {
@@ -81,10 +90,7 @@ function HeroArc({ orientation = 'vertical' }) {
   const progress = useMotionValue(0)
 
   const isLight = theme === 'light'
-  const line = isLight ? '#1A2540' : '#FFFFFF'
-  const idle = isLight ? '#667085' : '#8A93A6'
-  const activeLabel = isLight ? '#0A0F1E' : '#F1F5F9'
-  const dotIdle = isLight ? 'rgba(26,37,64,0.45)' : 'rgba(255,255,255,0.35)'
+  const { line, lineOpacity, idle, activeLabel, dotIdle } = arcColors(isLight)
 
   useEffect(() => {
     if (pathRef.current) setLength(pathRef.current.getTotalLength())
@@ -135,7 +141,7 @@ function HeroArc({ orientation = 'vertical' }) {
         d={layout.path}
         fill="none"
         stroke={line}
-        strokeOpacity={isLight ? 0.18 : 0.14}
+        strokeOpacity={lineOpacity}
         strokeWidth="1.5"
         strokeLinecap="round"
       />

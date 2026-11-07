@@ -1,12 +1,19 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { animate, useMotionValue } from 'framer-motion'
 import { useTheme } from '../hooks/useTheme'
-import { DIAGNOSTIC_STAGES } from '../data/diagnosticStages'
+import HeroArc, { LAYOUTS, arcColors } from './HeroArc'
 
-// The seven stage names start scattered at odd angles, with no pattern, then settle
-// in order along the arc. Plays once and stays resolved.
-const STAGE_NAMES = DIAGNOSTIC_STAGES.map((stage) => stage.name)
-const DOT_COUNT = 36
+// The seven stage names start scattered at odd angles, then settle into exactly the
+// Home arc. When they land, the canvas hands over to the real HeroArc, so the
+// resolved state is the same component, pulse included.
+const DOT_COUNT = 30
+
+// The horizontal arc is only 90 units tall, too cramped to scatter in, so its box
+// gets extra room above and below; the arc sits in the middle of it.
+const BOX = {
+  vertical: { height: 470, offsetY: 0 },
+  horizontal: { height: 190, offsetY: 50 },
+}
 
 // Deterministic layout so the scatter does not reshuffle on every render.
 function mulberry32(seed) {
@@ -25,201 +32,168 @@ const smoothstep = (x) => {
   return c * c * (3 - 2 * c)
 }
 
-// Same shape as the Home arc: opening to the right, so each name sits beside its dot.
-const arcPoint = (t, w, h) => {
-  const p0 = { x: 0.42 * w, y: 0.07 * h }
-  const p1 = { x: -0.02 * w, y: 0.5 * h }
-  const p2 = { x: 0.42 * w, y: 0.93 * h }
-  const u = 1 - t
-  return {
-    x: u * u * p0.x + 2 * u * t * p1.x + t * t * p2.x,
-    y: u * u * p0.y + 2 * u * t * p1.y + t * t * p2.y,
-  }
-}
-
-function ChaosToArc({ className = 'h-[420px]' }) {
+function ChaosToArc({ orientation = 'vertical' }) {
+  const layout = LAYOUTS[orientation]
+  const box = BOX[orientation]
   const canvasRef = useRef(null)
   const wrapRef = useRef(null)
   const { theme } = useTheme()
   const progress = useMotionValue(0)
+  const [resolved, setResolved] = useState(false)
 
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduced) {
       progress.set(1)
+      setResolved(true)
       return undefined
     }
     // a beat of chaos first, so the visitor sees what is being resolved
-    const controls = animate(progress, 1, { duration: 3.2, ease: 'easeInOut', delay: 1 })
+    const controls = animate(progress, 1, {
+      duration: 3,
+      ease: 'easeInOut',
+      delay: 1,
+      onComplete: () => setResolved(true),
+    })
     return () => controls.stop()
   }, [progress])
 
   useEffect(() => {
+    if (resolved) return undefined
     const canvas = canvasRef.current
     const wrap = wrapRef.current
     if (!canvas || !wrap) return undefined
     const ctx = canvas.getContext('2d')
-
-    const isLight = theme === 'light'
-    const inkRgb = isLight ? '26,37,64' : '255,255,255'
-    const wordRgb = isLight ? '71,85,105' : '148,163,184'
-    let width = 0
-    let height = 0
-    let fontSize = 15
-    let words = []
-    let dots = []
+    const colors = arcColors(theme === 'light')
+    const inkRgb = theme === 'light' ? '26,37,64' : '255,255,255'
+    const path = new Path2D(layout.path)
+    let scale = 1
     let raf = 0
 
-    const build = () => {
-      const rand = mulberry32(20260911)
-      fontSize = Math.max(12, Math.min(16, height / 28))
-      // each name gets its own height band, in shuffled order, so the scatter looks
-      // random without names piling on top of one another
-      const bands = STAGE_NAMES.map((_, i) => i)
-      for (let i = bands.length - 1; i > 0; i -= 1) {
-        const j = Math.floor(rand() * (i + 1))
-        ;[bands[i], bands[j]] = [bands[j], bands[i]]
-      }
-      words = STAGE_NAMES.map((name, i) => ({
-        name,
-        t: i / (STAGE_NAMES.length - 1),
-        cx: (0.02 + rand() * 0.55) * width,
-        cy: ((bands[i] + 0.5) / STAGE_NAMES.length) * height * 0.9 + height * 0.05,
-        angle: (rand() - 0.5) * 1.3,
-        // later stages settle slightly after earlier ones, so the order reads
-        phase: i * 0.035,
-      }))
-      dots = []
-      for (let i = 0; i < DOT_COUNT; i += 1) {
-        dots.push({
-          cx: (0.02 + rand() * 0.9) * width,
-          cy: (0.05 + rand() * 0.9) * height,
-          t: i / (DOT_COUNT - 1),
-          phase: rand() * 0.2,
-          wobble: 0.5 + rand() * 1.6,
-          wobblePhase: rand() * Math.PI * 2,
-        })
-      }
+    const rand = mulberry32(20260911)
+    // each name gets its own height band, in shuffled order, so the scatter looks
+    // random without names piling on top of one another
+    const bands = layout.stages.map((_, i) => i)
+    for (let i = bands.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(rand() * (i + 1))
+      ;[bands[i], bands[j]] = [bands[j], bands[i]]
     }
+    const n = layout.stages.length
+    const words = layout.stages.map((stage, i) => ({
+      stage,
+      cx: (0.08 + rand() * 0.6) * layout.width,
+      cy: ((bands[i] + 0.5) / n) * box.height * 0.88 + box.height * 0.06,
+      angle: (rand() - 0.5) * 1.3,
+      phase: i * 0.03,
+    }))
+    const dots = Array.from({ length: DOT_COUNT }, () => ({
+      cx: rand() * layout.width,
+      cy: rand() * box.height,
+      wobble: 0.5 + rand() * 1.5,
+      wobblePhase: rand() * Math.PI * 2,
+    }))
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
-      const rect = wrap.getBoundingClientRect()
-      width = rect.width
-      height = rect.height
+      const width = wrap.getBoundingClientRect().width
+      scale = width / layout.width
+      const height = box.height * scale
       canvas.width = Math.round(width * dpr)
       canvas.height = Math.round(height * dpr)
       canvas.style.width = `${width}px`
       canvas.style.height = `${height}px`
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      build()
+      ctx.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0)
     }
-
-    const settle = (phase, p) => smoothstep((p - phase) / (1 - 0.25))
 
     const render = (time) => {
       const p = progress.get()
-      ctx.clearRect(0, 0, width, height)
+      ctx.clearRect(0, 0, layout.width, box.height)
 
-      // the resolved arc, drawn as order arrives
-      if (p > 0.05) {
-        const gradient = ctx.createLinearGradient(0, 0, 0, height)
-        gradient.addColorStop(0, '#2563EB')
-        gradient.addColorStop(1, '#06B6D4')
-        ctx.strokeStyle = gradient
-        ctx.lineWidth = 1.5
-        ctx.lineCap = 'round'
-        ctx.globalAlpha = smoothstep((p - 0.05) / 0.6)
-        ctx.beginPath()
-        const steps = 90
-        const drawTo = Math.max(1, Math.floor(steps * smoothstep(p)))
-        for (let s = 0; s <= drawTo; s += 1) {
-          const pt = arcPoint(s / steps, width, height)
-          if (s === 0) ctx.moveTo(pt.x, pt.y)
-          else ctx.lineTo(pt.x, pt.y)
-        }
-        ctx.stroke()
-        ctx.globalAlpha = 1
-      }
+      // the arc line fades in underneath as the names find their places
+      ctx.save()
+      ctx.translate(0, box.offsetY)
+      ctx.globalAlpha = colors.lineOpacity * smoothstep((p - 0.3) / 0.6)
+      ctx.strokeStyle = colors.line
+      ctx.lineWidth = 1.5
+      ctx.lineCap = 'round'
+      ctx.stroke(path)
+      ctx.restore()
 
-      // loose particles drift onto the arc and fade into it
       dots.forEach((dot) => {
-        const local = settle(dot.phase, p)
-        const target = arcPoint(dot.t, width, height)
-        const drift = (1 - local) * dot.wobble * 3
-        const x = dot.cx + (target.x - dot.cx) * local + Math.sin(time * 0.0011 + dot.wobblePhase) * drift
-        const y = dot.cy + (target.y - dot.cy) * local + Math.cos(time * 0.0009 + dot.wobblePhase) * drift
-        ctx.fillStyle = `rgba(${inkRgb},${0.32 * (1 - local)})`
+        const drift = dot.wobble * 3
+        const x = dot.cx + Math.sin(time * 0.0011 + dot.wobblePhase) * drift
+        const y = dot.cy + Math.cos(time * 0.0009 + dot.wobblePhase) * drift
+        ctx.fillStyle = `rgba(${inkRgb},${0.3 * (1 - smoothstep(p * 1.4))})`
         ctx.beginPath()
-        ctx.arc(x, y, 1.4, 0, Math.PI * 2)
+        ctx.arc(x, y, 1.3, 0, Math.PI * 2)
         ctx.fill()
       })
 
-      // the seven stage names: scattered and tilted, then aligned beside the arc
       ctx.textBaseline = 'middle'
+      ctx.font = `400 ${layout.fontSize}px Satoshi, system-ui, sans-serif`
+      if ('letterSpacing' in ctx) ctx.letterSpacing = `${layout.fontSize * 0.04}px`
       words.forEach((word) => {
-        const local = settle(word.phase, p)
-        const anchor = arcPoint(word.t, width, height)
-        const tx = anchor.x + 14
+        const local = smoothstep((p - word.phase) / (1 - 0.18))
+        const { label, point } = word.stage
         const drift = (1 - local) * 2.5
-        const x = word.cx + (tx - word.cx) * local + Math.sin(time * 0.001 + word.angle * 7) * drift
-        const y = word.cy + (anchor.y - word.cy) * local + Math.cos(time * 0.0008 + word.angle * 5) * drift
+        const x = word.cx + (label.x - word.cx) * local + Math.sin(time * 0.001 + word.angle * 7) * drift
+        const targetY = label.y + box.offsetY
+        const y = word.cy + (targetY - word.cy) * local + Math.cos(time * 0.0008 + word.angle * 5) * drift
 
         ctx.save()
         ctx.translate(x, y)
         ctx.rotate(word.angle * (1 - local))
-        ctx.font = `500 ${fontSize}px Satoshi, system-ui, sans-serif`
-        ctx.fillStyle = `rgba(${wordRgb},${0.55 + 0.45 * local})`
-        ctx.fillText(word.name, 0, 0)
+        ctx.textAlign = label.anchor === 'middle' ? 'center' : 'left'
+        ctx.fillStyle = colors.idle
+        ctx.globalAlpha = 0.6 + 0.4 * local
+        ctx.fillText(word.stage.name, 0, 0)
         ctx.restore()
 
-        if (local > 0.6) {
-          ctx.fillStyle = `rgba(37,99,235,${(local - 0.6) / 0.4})`
-          ctx.beginPath()
-          ctx.arc(anchor.x, anchor.y, 2.5, 0, Math.PI * 2)
-          ctx.fill()
-        }
+        ctx.globalAlpha = smoothstep((local - 0.5) / 0.5)
+        ctx.fillStyle = colors.dotIdle
+        ctx.beginPath()
+        ctx.arc(point.x, point.y + box.offsetY, 2.5, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.globalAlpha = 1
       })
 
-      // once resolved nothing moves, so stop drawing until something changes
-      if (p < 1) raf = requestAnimationFrame(render)
-    }
-
-    const start = () => {
-      cancelAnimationFrame(raf)
       raf = requestAnimationFrame(render)
     }
 
     resize()
-    start()
-    const unsubscribe = progress.on('change', () => {
-      if (!raf || progress.get() < 1) start()
-    })
-
-    const observer = new ResizeObserver(() => {
-      resize()
-      start()
-    })
+    raf = requestAnimationFrame(render)
+    const observer = new ResizeObserver(resize)
     observer.observe(wrap)
-
-    // the canvas needs Satoshi loaded before it can draw the names in it
-    document.fonts?.ready.then(start)
 
     return () => {
       cancelAnimationFrame(raf)
-      unsubscribe()
       observer.disconnect()
     }
-  }, [theme, progress])
+  }, [theme, progress, resolved, layout, box])
+
+  const sizing =
+    orientation === 'vertical'
+      ? { width: layout.width }
+      : { width: '100%', maxWidth: layout.width }
 
   return (
     <div
       ref={wrapRef}
-      className={`w-full ${className}`}
-      role="img"
-      aria-label="The seven stage names, scattered at first, settling in order along a single arc from Clarity to Autonomy"
+      className="relative"
+      style={{ ...sizing, aspectRatio: `${layout.width} / ${box.height}` }}
     >
-      <canvas ref={canvasRef} className="block" />
+      {resolved ? (
+        <div className="absolute inset-x-0" style={{ top: `${(box.offsetY / box.height) * 100}%` }}>
+          <HeroArc orientation={orientation} />
+        </div>
+      ) : (
+        <canvas
+          ref={canvasRef}
+          className="block"
+          role="img"
+          aria-label="The seven stage names, scattered at first, settling in order along the arc"
+        />
+      )}
     </div>
   )
 }

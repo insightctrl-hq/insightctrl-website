@@ -13,7 +13,8 @@ function About() {
   return (
     <>
       <section className="container-content pb-16 pt-14 md:pt-20">
-        <div className="grid items-center gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,1fr)_320px]">
+        {/* same grid and arc placement as Home, so the arc sits in the same spot */}
+        <div className="grid items-center gap-x-12 lg:grid-cols-[minmax(0,1fr)_280px]">
           <div>
             <p className="text-eyebrow">Who we are</p>
             <h1 className="mt-8 text-balance text-hero">Vision builders are the future of Africa.</h1>
@@ -24,8 +25,13 @@ function About() {
             <Link to="/insights" className="text-link mt-8">
               Learn more
             </Link>
+            <div className="mt-12 lg:hidden">
+              <ChaosToArc orientation="horizontal" />
+            </div>
           </div>
-          <ChaosToArc className="h-[240px] lg:h-[420px]" />
+          <div className="hidden justify-self-end lg:block">
+            <ChaosToArc />
+          </div>
         </div>
 
         <div className="mt-16 border-t border-border pt-6">
