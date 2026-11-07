@@ -5,9 +5,7 @@ import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
 import Diagnostic from './pages/Diagnostic'
 import About from './pages/About'
-import Projects from './pages/Projects'
 import Thinking from './pages/Thinking'
-import Book from './pages/Book'
 import Services from './pages/Services'
 import DataToggle from './dev/DataToggle'
 
@@ -24,9 +22,9 @@ function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/insights" element={<Thinking />} />
           <Route path="/thinking" element={<Navigate to="/insights" replace />} />
-          {/* old pages, kept reachable until Services absorbs them */}
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/book" element={<Book />} />
+          {/* old links from before the redesign */}
+          <Route path="/projects" element={<Navigate to="/services" replace />} />
+          <Route path="/book" element={<Navigate to="/services" replace />} />
         </Routes>
       </main>
       <Footer />
