@@ -40,6 +40,8 @@ function ChaosToArc({ orientation = 'vertical' }) {
   const { theme } = useTheme()
   const progress = useMotionValue(0)
   const [resolved, setResolved] = useState(false)
+  // bumped on each tap, so the scatter runs again from the start
+  const [run, setRun] = useState(0)
 
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -48,15 +50,24 @@ function ChaosToArc({ orientation = 'vertical' }) {
       setResolved(true)
       return undefined
     }
-    // a beat of chaos first, so the visitor sees what is being resolved
+    progress.set(0)
+    // a beat of chaos first, so the visitor sees what is being resolved; a replay
+    // was asked for, so it waits less
     const controls = animate(progress, 1, {
       duration: 3,
       ease: 'easeInOut',
-      delay: 1,
+      delay: run === 0 ? 1 : 0.4,
       onComplete: () => setResolved(true),
     })
     return () => controls.stop()
-  }, [progress])
+  }, [progress, run])
+
+  const replay = () => {
+    if (!resolved) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    setResolved(false)
+    setRun((n) => n + 1)
+  }
 
   useEffect(() => {
     if (resolved) return undefined
@@ -177,9 +188,12 @@ function ChaosToArc({ orientation = 'vertical' }) {
       : { width: '100%', maxWidth: layout.width }
 
   return (
-    <div
+    <button
+      type="button"
       ref={wrapRef}
-      className="relative"
+      onClick={replay}
+      aria-label="Replay the seven stages moving from chaos onto the arc"
+      className="relative block cursor-pointer rounded-lg text-left outline-none focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:ring-offset-4 focus-visible:ring-offset-bg-primary"
       style={{ ...sizing, aspectRatio: `${layout.width} / ${box.height}` }}
     >
       {resolved ? (
@@ -190,11 +204,10 @@ function ChaosToArc({ orientation = 'vertical' }) {
         <canvas
           ref={canvasRef}
           className="block"
-          role="img"
-          aria-label="The seven stage names, scattered at first, settling in order along the arc"
+          aria-hidden="true"
         />
       )}
-    </div>
+    </button>
   )
 }
 

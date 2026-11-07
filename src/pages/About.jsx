@@ -1,14 +1,15 @@
 import { Link } from 'react-router-dom'
 import ChaosToArc from '../components/ChaosToArc'
 import ClosingBand from '../components/ClosingBand'
+import SignalTraces from '../components/SignalTraces'
 
 // The six core values were cut: the ABOUT INSIGHTCTRL doc lists them without saying
-// what they mean, so on their own they told a reader nothing. In their place, two
-// beliefs taken from the same doc, close to its own wording. Pending Chibueze's approval.
-const BELIEFS = [
-  'Every business already has chaos inside it. Systems and structure kill chaos.',
-  'Without a system, revenue is the only signal a founder can see. Chaos stays invisible until it kills the business. Structure makes the other signals visible.',
-]
+// what they mean. In their place, one belief from the same doc, approved Nov 2026.
+const BELIEF = {
+  unseen:
+    'Without a system, revenue is the only signal a founder can see. Chaos stays invisible until it kills the business.',
+  seen: 'Structure makes the other signals visible.',
+}
 
 // The team section is out for now (user's call, Nov 2026). Bios, if it returns:
 // Chibueze Obunadike: Operational strategy, systems design, and client engagement.
@@ -57,18 +58,14 @@ function About() {
       </section>
 
       <section className="container-content">
-        <div className="border-t border-border py-24">
-          <h2 className="text-section-headline">How we think</h2>
-          <ul className="mt-12 grid gap-x-16 gap-y-10 md:grid-cols-2">
-            {BELIEFS.map((belief) => (
-              <li
-                key={belief}
-                className="max-w-[30rem] text-[1.375rem] font-medium leading-[1.45] tracking-[-0.01em] text-text-primary"
-              >
-                {belief}
-              </li>
-            ))}
-          </ul>
+        <div className="grid items-center gap-x-16 gap-y-14 border-t border-border py-28 md:py-36 lg:grid-cols-[minmax(0,1fr)_400px]">
+          {/* The statement goes from faint to full ink, the way the signals it
+              describes go from invisible to visible. */}
+          <blockquote className="max-w-[40rem] text-balance text-[1.875rem] font-bold leading-[1.15] tracking-[-0.02em] md:text-[2.5rem] lg:text-[3.3125rem] lg:leading-[1.08]">
+            <span className="text-text-muted">{BELIEF.unseen}</span>
+            <span className="mt-[0.35em] block text-text-primary">{BELIEF.seen}</span>
+          </blockquote>
+          <SignalTraces />
         </div>
       </section>
 
