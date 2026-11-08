@@ -3,6 +3,8 @@ import { animate, motion, useMotionValue, useTransform } from 'framer-motion'
 
 // The Chaos to CTRL arc, used as the stage picker. Larger than the Home arc so each
 // stage is a comfortable target, with labels set at body size.
+// With readOnly it becomes a picture of a result: the scored stage is lit and a
+// dashed line runs on to nextIndex, the stage to look at next. Nothing is clickable.
 const WIDTH = 380
 const HEIGHT = 540
 const P0 = { x: 210, y: 30 }
@@ -36,7 +38,7 @@ const fractionAt = (t) => {
   return (LENGTHS[i] + (LENGTHS[i + 1] - LENGTHS[i]) * (exact - i)) / TOTAL
 }
 
-function StageArcPicker({ stages, selectedIndex, onSelect }) {
+function StageArcPicker({ stages, selectedIndex, onSelect, readOnly = false, nextIndex = null }) {
   const nodeRefs = useRef([])
   const last = stages.length - 1
   const tFor = (i) => i / last
@@ -53,6 +55,16 @@ function StageArcPicker({ stages, selectedIndex, onSelect }) {
   }, [selectedIndex])
 
   const litLength = useTransform(reach, fractionAt)
+  const hasNext = readOnly && nextIndex !== null && nextIndex > selectedIndex
+  // the next leg as its own short path, so the dashes start at the scored stage
+  const nextPath = hasNext
+    ? (() => {
+        const pts = Array.from({ length: 25 }, (_, k) =>
+          pointAt(tFor(selectedIndex) + ((tFor(nextIndex) - tFor(selectedIndex)) * k) / 24),
+        )
+        return `M ${pts.map((p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' L ')}`
+      })()
+    : null
   const headX = useTransform(reach, (t) => pointAt(t).x)
   const headY = useTransform(reach, (t) => pointAt(t).y)
 
@@ -85,8 +97,12 @@ function StageArcPicker({ stages, selectedIndex, onSelect }) {
     <svg
       viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
       className="block h-auto w-full max-w-[380px]"
-      role="radiogroup"
-      aria-label="The seven stages, from Clarity to Autonomy"
+      {...(readOnly
+        ? {
+            role: 'img',
+            'aria-label': `${stages[selectedIndex].name} diagnosed${hasNext ? `, ${stages[nextIndex].name} next` : ''}, on the seven-stage arc`,
+          }
+        : { role: 'radiogroup', 'aria-label': 'The seven stages, from Clarity to Autonomy' })}
     >
       <path
         d={PATH}
@@ -102,45 +118,62 @@ function StageArcPicker({ stages, selectedIndex, onSelect }) {
         strokeLinecap="round"
         style={{ stroke: 'var(--accent-blue)', pathLength: litLength }}
       />
+      {hasNext && (
+        <path
+          d={nextPath}
+          fill="none"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeDasharray="2 7"
+          style={{ stroke: 'var(--accent-blue)' }}
+        />
+      )}
 
       {stages.map((stage, i) => {
         const { x, y } = pointAt(tFor(i))
         const selected = i === selectedIndex
         const reached = i <= selectedIndex
+        const isNext = hasNext && i === nextIndex
+        const interactive = readOnly
+          ? {}
+          : {
+              ref: (el) => {
+                nodeRefs.current[i] = el
+              },
+              role: 'radio',
+              'aria-checked': selected,
+              'aria-label': `Stage ${i + 1}: ${stage.name}`,
+              tabIndex: selected ? 0 : -1,
+              className: 'arc-stage cursor-pointer',
+              onClick: () => onSelect(i),
+              onKeyDown: (event) => onKeyDown(event, i),
+            }
         return (
-          <g
-            key={stage.id}
-            ref={(el) => {
-              nodeRefs.current[i] = el
-            }}
-            role="radio"
-            aria-checked={selected}
-            aria-label={`Stage ${i + 1}: ${stage.name}`}
-            tabIndex={selected ? 0 : -1}
-            className="arc-stage cursor-pointer"
-            onClick={() => onSelect(i)}
-            onKeyDown={(event) => onKeyDown(event, i)}
-          >
-            {/* generous invisible target covering the dot and its label */}
-            <rect x={x - 18} y={y - 22} width={WIDTH - x + 14} height={44} fill="transparent" />
-            <rect
-              className="arc-focus"
-              x={x - 14}
-              y={y - 19}
-              width={WIDTH - x + 8}
-              height={38}
-              rx={8}
-              fill="none"
-              strokeWidth="1.5"
-              style={{ stroke: 'var(--accent-blue)' }}
-            />
+          <g key={stage.id} {...interactive}>
+            {!readOnly && (
+              <>
+                {/* generous invisible target covering the dot and its label */}
+                <rect x={x - 18} y={y - 22} width={WIDTH - x + 14} height={44} fill="transparent" />
+                <rect
+                  className="arc-focus"
+                  x={x - 14}
+                  y={y - 19}
+                  width={WIDTH - x + 8}
+                  height={38}
+                  rx={8}
+                  fill="none"
+                  strokeWidth="1.5"
+                  style={{ stroke: 'var(--accent-blue)' }}
+                />
+              </>
+            )}
             <circle
               cx={x}
               cy={y}
               r={selected ? 7 : 4.5}
               style={{
                 fill: reached ? 'var(--accent-blue)' : 'var(--bg-primary)',
-                stroke: reached ? 'var(--accent-blue)' : 'var(--border-accent)',
+                stroke: reached || isNext ? 'var(--accent-blue)' : 'var(--border-accent)',
                 strokeWidth: 1.5,
                 transition: 'r 200ms cubic-bezier(0.23, 1, 0.32, 1), fill 200ms ease',
               }}
@@ -152,7 +185,7 @@ function StageArcPicker({ stages, selectedIndex, onSelect }) {
               fontSize="17"
               fontWeight={selected ? 700 : 500}
               style={{
-                fill: selected ? 'var(--text-primary)' : 'var(--text-secondary)',
+                fill: selected || isNext ? 'var(--text-primary)' : 'var(--text-secondary)',
                 transition: 'fill 200ms ease',
               }}
             >

@@ -1,16 +1,13 @@
 import { motion } from 'framer-motion'
-import Badge from './Badge'
 import Button from './Button'
+import StageArcPicker from './StageArcPicker'
+import { DIAGNOSTIC_STAGES } from '../data/diagnosticStages'
 import { TALLY_URL, TALLY_RESULTS_FORM_ID } from '../constants/links'
 import { openTallyPopup } from '../lib/tally'
 
-// One status colour per rating, shared by the card's top rule and the badge.
-// Cyan stays reserved for the arc's pulse, so Strong reads as green.
-const BAND_STYLE = {
-  Strong: { rule: 'border-t-success', badge: 'success' },
-  Partial: { rule: 'border-t-warning', badge: 'warning' },
-  Critical: { rule: 'border-t-danger', badge: 'danger' },
-}
+// The rating decides the next step. A Strong score moves on to the next stage; a
+// Partial or Critical one is where a session helps most, so booking leads.
+const BOOKING_FIRST = new Set(['Partial', 'Critical'])
 
 const EMAIL_GIVEN_KEY = 'insightctrl-results-email-given'
 
@@ -38,6 +35,7 @@ function hasGivenEmail() {
 
 function DiagnosticResult({
   stageName,
+  stageIndex,
   score,
   band,
   rootCause,
@@ -45,8 +43,6 @@ function DiagnosticResult({
   onContinue,
   onRestart,
 }) {
-  const style = BAND_STYLE[band] ?? BAND_STYLE.Critical
-
   // Scores and stage only, never personal data, so the booking form arrives
   // with context. Tally ignores these unless the form has matching hidden fields.
   const bookingUrl = `${TALLY_URL}?${new URLSearchParams({
@@ -85,10 +81,28 @@ function DiagnosticResult({
     }
   }
 
+  const bookingFirst = BOOKING_FIRST.has(band)
+  const continueLabel = nextStageName ? `Continue to ${nextStageName}` : 'Return to home'
+  const nextIndex = nextStageName ? stageIndex + 1 : null
+
+  // same approved copy and price as the Operating Room on Services
+  const operatingRoom = (
+    <>
+      <h2 className="text-[1.375rem] font-bold tracking-[-0.01em] text-text-primary">
+        Operating Room
+      </h2>
+      <p className="mt-2 max-w-[32rem] text-body">
+        One hour on one specific question or task. You get a written diagnostic report within
+        24 hours.
+      </p>
+      <p className="mt-4 text-[1.0625rem] font-medium text-text-primary">₦50,000</p>
+    </>
+  )
+
   return (
     <motion.div
-      initial={{ opacity: 0, x: 24 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
       className="w-full"
     >
@@ -97,59 +111,59 @@ function DiagnosticResult({
         <p className="text-eyebrow">{printDate}</p>
       </div>
 
-      <div
-        className={`overflow-hidden rounded-xl border border-t-4 border-border bg-bg-surface ${style.rule}`}
-      >
-        <div className="p-6 sm:p-8">
-          <p className="text-eyebrow">{stageName}</p>
-
-          <div className="mt-4 flex items-center gap-3">
-            <Badge label={band} variant={style.badge} />
-            <span className="text-[0.8125rem] tabular-nums text-text-secondary">
-              {score} of 20
-            </span>
-          </div>
-
-          <p className="text-lead mt-8 border-t border-border pt-8 text-text-primary">
-            {rootCause}
-          </p>
-        </div>
-
-        <div className="border-t border-border bg-bg-primary p-6 sm:p-8 print:hidden">
-          {/* same approved copy and price as the Operating Room on Services */}
-          <h3 className="text-[1.375rem] font-bold tracking-[-0.01em] text-text-primary">
-            Operating Room
-          </h3>
-          <p className="mt-2 text-body">
-            One hour on one specific question or task. You get a written diagnostic report
-            within 24 hours.
-          </p>
-          <p className="mt-4 text-[1.0625rem] font-medium text-text-primary">₦50,000</p>
-          <Button
-            label="Book a session"
-            onClick={handleBook}
-            variant="primary"
-            className="mt-6 w-full sm:w-auto"
+      <div className="grid items-start gap-x-20 gap-y-14 lg:grid-cols-[300px_minmax(0,1fr)]">
+        {/* the arc sits beside the verdict on wide screens and after it on phones */}
+        <div className="order-2 mx-auto w-full max-w-[240px] lg:order-1 lg:mx-0 lg:max-w-none print:hidden">
+          <StageArcPicker
+            stages={DIAGNOSTIC_STAGES}
+            selectedIndex={stageIndex}
+            nextIndex={nextIndex}
+            readOnly
           />
         </div>
-      </div>
 
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row print:hidden">
-        <Button
-          label={nextStageName ? `Continue to ${nextStageName}` : 'Return to home'}
-          onClick={onContinue}
-          variant="outline"
-        />
-        <Button label="Print my results" onClick={handlePrint} variant="outline" />
-      </div>
+        <div className="order-1 max-w-[40rem] lg:order-2">
+          <p className="text-eyebrow">{stageName}</p>
+          <h1 className="mt-3 text-hero">{band}</h1>
+          <p className="mt-3 text-[0.9375rem] tabular-nums text-text-muted">{score} of 20 points</p>
+          <p className="text-lead mt-8 text-text-primary">{rootCause}</p>
 
-      <button
-        type="button"
-        onClick={onRestart}
-        className="mt-6 text-[0.8125rem] text-text-secondary transition-colors hover:text-text-primary print:hidden"
-      >
-        Take another diagnostic
-      </button>
+          <div className="mt-12 border-t border-border pt-10 print:hidden">
+            {bookingFirst ? (
+              <>
+                {operatingRoom}
+                <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
+                  <Button label="Book the Operating Room" onClick={handleBook} size="lg" />
+                  <button type="button" onClick={onContinue} className="text-link">
+                    {continueLabel}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Button label={continueLabel} onClick={onContinue} size="lg" />
+                <div className="mt-12">{operatingRoom}</div>
+                <button type="button" onClick={handleBook} className="text-link mt-5">
+                  Book the Operating Room
+                </button>
+              </>
+            )}
+
+            <div className="mt-12 flex flex-wrap gap-x-8 gap-y-3">
+              <button type="button" onClick={handlePrint} className="text-link text-[0.9375rem]">
+                Print my results
+              </button>
+              <button
+                type="button"
+                onClick={onRestart}
+                className="text-[0.9375rem] text-text-muted transition-colors hover:text-text-primary"
+              >
+                Take another diagnostic
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </motion.div>
   )
 }

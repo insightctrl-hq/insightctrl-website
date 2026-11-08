@@ -110,10 +110,11 @@ function Diagnostic() {
     const nextStage = DIAGNOSTIC_STAGES[stageIndex + 1] ?? null
 
     return (
-      <div className="container-content py-20">
-        <div className="mx-auto max-w-xl">
+      <div className="container-content pb-24 pt-16 md:pt-20">
+        <div>
           <DiagnosticResult
             stageName={selectedStage.name}
+            stageIndex={stageIndex}
             score={score}
             band={band}
             rootCause={rootCause}
