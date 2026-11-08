@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { SUBSTACK_RSS_URL } from '../constants/links'
 
 const FEED_ENDPOINT = '/api/substack-feed'
-const MAX_POSTS = 4
-const EXCERPT_LENGTH = 120
+const MAX_POSTS = 9
+const EXCERPT_LENGTH = 280
 
 function stripHtml(html) {
   const doc = new DOMParser().parseFromString(html, 'text/html')

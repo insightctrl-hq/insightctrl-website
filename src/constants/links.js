@@ -16,5 +16,6 @@ export const SOCIAL_LINKS = {
 
 export const SUBSTACK_RSS_URL = 'https://insightctrl.substack.com/feed'
 export const SUBSTACK_URL = 'https://substack.com/@insightctrl'
+export const SUBSTACK_SUBSCRIBE_URL = 'https://insightctrl.substack.com/subscribe'
 
 export const CONTACT_EMAIL = 'insightctrl@gmail.com'

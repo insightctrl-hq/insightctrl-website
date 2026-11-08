@@ -18,7 +18,7 @@ function Footer() {
             alt="InsightCTRL"
             className="w-[132px]"
           />
-          <p className="mt-5 text-body">Strategy, structure, and operational clarity.</p>
+          <p className="mt-5 text-body">Strategy, systems, operational intelligence.</p>
           <p className="mt-2 text-[0.8125rem] text-text-muted">
             Operational advisory, Port Harcourt, Nigeria
           </p>
