@@ -81,7 +81,10 @@ function Services() {
               <article key={product.name}>
                 <div className="grid gap-x-14 gap-y-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end">
                   <div>
-                    <p className="text-eyebrow">{product.name}</p>
+                    <p className="text-eyebrow">
+                      <span className="text-text-primary">{product.name}</span>
+                      <span className="ml-3">In testing</span>
+                    </p>
                     <h3 className="mt-2 text-balance text-[1.875rem] font-bold leading-[1.15] tracking-[-0.02em] md:text-[2.5rem]">
                       {product.tagline}
                     </h3>
