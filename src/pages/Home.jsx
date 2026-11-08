@@ -11,7 +11,7 @@ function Home() {
         <div>
           <h1 className="text-balance text-[clamp(2rem,9.2vw,2.75rem)] font-bold leading-[1.02] tracking-[-0.03em] text-text-primary md:text-[3.75rem] lg:text-[clamp(3rem,5.2vw,4.4375rem)]">
             <span className="text-lead mb-5 block md:text-[1.375rem]">
-              Until your business lives within a dedicated structure,
+              Without defined systems and structure,
             </span>
             <span className="block">you don't have a{' '}business.</span>
             <span className="block">You have chaos operating at{' '}scale.</span>
