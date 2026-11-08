@@ -38,7 +38,7 @@ function DiagnosticQuestion({
             key={option.label}
             type="button"
             onClick={() => onAnswer(option)}
-            className="rounded-xl border border-border bg-bg-surface px-5 py-4 text-left text-[0.875rem] leading-[1.6] text-text-primary transition-[border-color,transform] duration-200 ease-out hover:border-border-accent active:scale-[0.985] active:duration-100"
+            className="rounded-xl border border-border bg-bg-surface px-5 py-4 text-left text-[1.0625rem] leading-[1.5] text-text-primary transition-[border-color,transform] duration-200 ease-out hover:border-border-accent active:scale-[0.985] active:duration-100"
           >
             {option.label}
           </button>

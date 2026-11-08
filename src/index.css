@@ -138,14 +138,6 @@ a {
     @apply mx-auto w-full max-w-[1120px] px-6 lg:px-8;
   }
 
-  .section {
-    @apply py-20;
-  }
-
-  .section-divider {
-    @apply border-t border-border;
-  }
-
   /* Type scale: each step a third larger (13 / 17 / 22 / 30 / 40 / 53 / 71px).
      Home's headline takes the top step; every other page's h1 takes 53. */
   .text-hero {
@@ -170,19 +162,7 @@ a {
     @apply text-[0.8125rem] font-medium text-text-muted;
   }
 
-  .card {
-    @apply rounded-xl border border-border bg-bg-surface p-5;
-  }
-
-  .card-interactive {
-    @apply card transition-colors duration-200 hover:border-border-accent;
-  }
-
   .text-link {
     @apply inline-flex items-center text-[1rem] font-medium text-accent-link underline decoration-transparent underline-offset-4 transition-colors duration-200 hover:decoration-current;
-  }
-
-  .gradient-text {
-    @apply bg-brand-gradient bg-clip-text text-transparent;
   }
 }

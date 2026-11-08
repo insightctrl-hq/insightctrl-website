@@ -4,9 +4,10 @@ import Button from './Button'
 import { TALLY_URL, TALLY_RESULTS_FORM_ID } from '../constants/links'
 import { openTallyPopup } from '../lib/tally'
 
-// One colour per rating, shared by the card's top rule and the badge
+// One status colour per rating, shared by the card's top rule and the badge.
+// Cyan stays reserved for the arc's pulse, so Strong reads as green.
 const BAND_STYLE = {
-  Strong: { rule: 'border-t-accent-cyan', badge: 'pro' },
+  Strong: { rule: 'border-t-success', badge: 'success' },
   Partial: { rule: 'border-t-warning', badge: 'warning' },
   Critical: { rule: 'border-t-danger', badge: 'danger' },
 }
@@ -109,20 +110,21 @@ function DiagnosticResult({
             </span>
           </div>
 
-          <p className="mt-8 border-t border-border pt-8 text-[1.125rem] leading-[1.6] text-text-primary">
+          <p className="text-lead mt-8 border-t border-border pt-8 text-text-primary">
             {rootCause}
           </p>
         </div>
 
         <div className="border-t border-border bg-bg-primary p-6 sm:p-8 print:hidden">
-          <Badge label="Consult" />
-          <h3 className="mt-4 text-[1.0625rem] font-semibold tracking-[-0.01em] text-text-primary">
+          {/* same approved copy and price as the Operating Room on Services */}
+          <h3 className="text-[1.375rem] font-bold tracking-[-0.01em] text-text-primary">
             Operating Room
           </h3>
           <p className="mt-2 text-body">
-            Sixty minutes with an InsightCTRL advisor. Walk in with a question. Leave with a
-            direction.
+            One hour on one specific question or task. You get a written diagnostic report
+            within 24 hours.
           </p>
+          <p className="mt-4 text-[1.0625rem] font-medium text-text-primary">₦50,000</p>
           <Button
             label="Book a session"
             onClick={handleBook}

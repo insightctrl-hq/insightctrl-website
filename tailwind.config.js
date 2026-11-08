@@ -33,9 +33,6 @@ export default {
       fontFamily: {
         sans: ['Satoshi', 'system-ui', '-apple-system', 'sans-serif'],
       },
-      backgroundImage: {
-        'brand-gradient': 'linear-gradient(90deg, #2563EB, #06B6D4)',
-      },
       borderWidth: {
         DEFAULT: 'var(--border-width)',
       },
