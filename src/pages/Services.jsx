@@ -23,7 +23,8 @@ const ENGAGEMENTS = [
     description:
       'A half day with your leadership team, with the whole business and its operations on the table. You get a written diagnostic summary within 48 hours.',
     price: [
-      '₦250,000 for up to 4 people, then ₦50,000 per extra person, up to 10.',
+      // non-breaking spaces keep 'up to 10' from dropping onto a line of its own
+      '₦250,000 for up to 4 people, then ₦50,000 per extra\u00a0person,\u00a0up\u00a0to\u00a010.',
       'Extra time is ₦50,000 per 30 minutes.',
     ],
     cta: 'Book a Roundtable',

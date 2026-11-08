@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import ClosingBand from '../components/ClosingBand'
 import { useSubstackFeed } from '../hooks/useSubstackFeed'
 import { SUBSTACK_URL, SUBSTACK_SUBSCRIBE_URL } from '../constants/links'
@@ -95,7 +96,13 @@ function Thinking() {
             </div>
           )}
           {!loading && !lead && (
-            <p className="text-lead max-w-[36rem]">New think-pieces are on the way.</p>
+            <>
+              <p className="text-lead max-w-[36rem]">New think-pieces are on the way.</p>
+              {/* the empty page still gives the reader somewhere to go */}
+              <Link to="/diagnostic" className="text-link mt-6">
+                Run the free diagnostic
+              </Link>
+            </>
           )}
         </div>
       </section>
