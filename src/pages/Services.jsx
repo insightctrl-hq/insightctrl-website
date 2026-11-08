@@ -1,34 +1,61 @@
 import ClosingBand from '../components/ClosingBand'
 import { PRODUCTS } from '../data/products'
-import { TALLY_URL, TALLY_FDI_URL } from '../constants/links'
+import { TALLY_URL } from '../constants/links'
 
-// Engagement copy is carried over from the old Book page. Prices are the public ones.
+// Every link opens the intake form tagged with where it came from, so a request
+// arrives already sorted. (Add a hidden field named "source" in Tally to see it.)
+// Partner should move to its own application form once that exists.
+const intake = (source) => `${TALLY_URL}?source=${source}`
+
+// Operating Room prices are pending Chibueze's decision (per seat or per session),
+// so no price shows for it yet.
 const ENGAGEMENTS = [
   {
     name: 'Operating Room',
-    description: 'One session on one specific question.',
-    prices: [
-      '₦50,000 for a founder',
-      '₦250,000 for a leadership team of up to four, with a written diagnostic summary within 48 hours',
+    formats: [
+      {
+        name: 'Tactical Sprint',
+        description:
+          'A one-hour session on one specific question or task. Best for fast-moving teams and projects with short planning-to-execution times.',
+        cta: 'Book a Tactical Sprint',
+        source: 'operating-room-sprint',
+      },
+      {
+        name: 'Deep Work',
+        description:
+          'A three-hour strategy session with your entire business and operations as the focus.',
+        cta: 'Book a Deep Work session',
+        source: 'operating-room-deep-work',
+      },
     ],
-    cta: 'Book the Operating Room',
   },
   {
     name: 'Full Build',
-    description: 'The strategy is clear. The systems are not. We come in and build them with you.',
-    prices: ['Project-based'],
+    description:
+      'We deliver the strategy and come on board to handle operations and execution for a specific project.',
+    price: 'Priced per project',
     cta: 'Start a conversation',
+    source: 'full-build',
   },
   {
     name: 'Partner',
     description:
       'Some visions take longer than a project. We work with a select few founders as their long-term operational partner.',
-    prices: ['By application'],
+    price: 'By application',
     cta: 'Apply to partner',
+    source: 'partner',
   },
 ]
 
 const external = { target: '_blank', rel: 'noopener noreferrer' }
+
+function IntakeLink({ source, children }) {
+  return (
+    <a href={intake(source)} {...external} className="text-link mt-5 self-start">
+      {children}
+    </a>
+  )
+}
 
 function Services() {
   return (
@@ -44,64 +71,62 @@ function Services() {
 
       <section className="container-content">
         <div className="border-t border-border py-24">
-          <h2 className="text-section-headline">Ways to work with us</h2>
+          <h2 className="text-section-headline">Engagements</h2>
           <div className="mt-14 grid gap-x-14 gap-y-16 lg:grid-cols-3">
             {ENGAGEMENTS.map((engagement) => (
               <div key={engagement.name} className="flex max-w-[26rem] flex-col">
                 <h3 className="text-[1.375rem] font-bold tracking-[-0.01em]">{engagement.name}</h3>
-                <p className="mt-3 text-body">{engagement.description}</p>
-                <ul className="mt-6 space-y-2">
-                  {engagement.prices.map((price) => (
-                    <li key={price} className="text-[1.0625rem] font-medium leading-[1.5] text-text-primary">
-                      {price}
-                    </li>
-                  ))}
-                </ul>
-                <a href={TALLY_URL} {...external} className="text-link mt-6 self-start">
-                  {engagement.cta}
-                </a>
+                {engagement.formats ? (
+                  <div className="mt-4 space-y-8">
+                    {engagement.formats.map((format) => (
+                      <div key={format.name} className="flex flex-col">
+                        <h4 className="text-[1.0625rem] font-medium text-text-primary">
+                          {format.name}
+                        </h4>
+                        <p className="mt-1 text-body">{format.description}</p>
+                        <IntakeLink source={format.source}>{format.cta}</IntakeLink>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    <p className="mt-4 text-body">{engagement.description}</p>
+                    <p className="mt-5 text-[1.0625rem] font-medium text-text-primary">
+                      {engagement.price}
+                    </p>
+                    <IntakeLink source={engagement.source}>{engagement.cta}</IntakeLink>
+                  </>
+                )}
               </div>
             ))}
           </div>
-          <p className="mt-20 max-w-[36rem] text-body">
-            Investors assessing the operational readiness of a business or portfolio company can{' '}
-            <a href={TALLY_FDI_URL} {...external} className="text-link">
-              reach out directly
-            </a>
-            .
-          </p>
         </div>
       </section>
 
+      {/* Previews only. A full Tools & Products page will hold everything we build. */}
       <section className="container-content">
         <div className="border-t border-border py-24">
-          <h2 className="text-section-headline">Products we build</h2>
-          <div className="mt-14 space-y-24">
+          <h2 className="text-section-headline">Tools &amp; Products</h2>
+          <div className="mt-12 grid gap-x-10 gap-y-14 md:grid-cols-2">
             {PRODUCTS.map((product) => (
-              <article key={product.name}>
-                <div className="grid gap-x-14 gap-y-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end">
-                  <div>
-                    <p className="text-eyebrow">
-                      <span className="text-text-primary">{product.name}</span>
-                      <span className="ml-3">In testing</span>
-                    </p>
-                    <h3 className="mt-2 text-balance text-[1.875rem] font-bold leading-[1.15] tracking-[-0.02em] md:text-[2.5rem]">
-                      {product.tagline}
-                    </h3>
-                  </div>
-                  <p className="max-w-[30rem] text-body lg:pb-1">{product.description}</p>
-                </div>
-                {/* On phones the whole screen would shrink past reading, so it shows
-                    the left part at a size where the numbers can be read. */}
-                <div className="mt-10 overflow-hidden rounded-xl border border-border">
+              <article key={product.name} className="flex flex-col">
+                <div className="overflow-hidden rounded-lg border border-border">
                   <img
                     src={product.image}
                     alt={product.alt}
                     width={product.width}
                     height={product.height}
-                    className="block aspect-[4/3] w-full object-cover object-left-top md:aspect-auto md:h-auto"
+                    className="block aspect-[16/10] w-full object-cover object-left-top"
                   />
                 </div>
+                <p className="text-eyebrow mt-6">
+                  <span className="text-text-primary">{product.name}</span>
+                  <span className="ml-3">In testing</span>
+                </p>
+                <h3 className="mt-2 text-[1.375rem] font-bold leading-[1.25] tracking-[-0.01em]">
+                  {product.tagline}
+                </h3>
+                <p className="mt-2 max-w-[30rem] text-body">{product.description}</p>
               </article>
             ))}
           </div>
