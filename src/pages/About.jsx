@@ -1,21 +1,10 @@
 import { Link } from 'react-router-dom'
 import ChaosToArc from '../components/ChaosToArc'
 import ClosingBand from '../components/ClosingBand'
+import { FOUNDERS } from '../data/founders'
 
-// The six core values were cut: the ABOUT INSIGHTCTRL doc lists them without saying
-// what they mean. In their place, one belief from the same doc, approved Nov 2026.
-const BELIEF = [
-  'Without a system, revenue is the only signal a founder can see. Chaos stays invisible until it kills the business.',
-  'Structure makes the other signals visible.',
-]
-
-// Names and titles approved 8 Nov 2026. "View profile" links come once the bios
-// are written and approved. Ebuka's photo is a low-resolution stand-in.
-const FOUNDERS = [
-  { name: 'Chibueze Obunadike', title: 'Co-founder', photo: '/team/chibueze-obunadike.jpg' },
-  { name: 'Chukwuebuka Abah', title: 'Co-founder', photo: '/team/chukwuebuka-abah.jpg' },
-]
-
+// Hero approved 8 Nov 2026. It carries the revenue-signal belief that used to sit
+// lower down, so that section is gone rather than saying it twice.
 function About() {
   return (
     <>
@@ -23,10 +12,11 @@ function About() {
         {/* same grid and arc placement as Home, so the arc sits in the same spot */}
         <div className="grid items-center gap-x-12 lg:grid-cols-[minmax(0,1fr)_280px]">
           <div>
-            <h1 className="text-balance text-hero">Vision builders are the future of Africa.</h1>
-            <p className="mt-6 max-w-[34rem] text-[1.125rem] leading-[1.65] text-text-secondary">
-              Running the business behind the vision is a different skill. We take care of the
-              structure so you can do what you do best.
+            <h1 className="max-w-[40rem] text-balance text-hero">
+              Without a system, chaos stays invisible until it kills your business.
+            </h1>
+            <p className="text-lead mt-6 max-w-[34rem]">
+              We work with you to build the strategy and systems your business runs on.
             </p>
             <Link to="/services" className="text-link mt-8">
               See how we work
@@ -57,21 +47,13 @@ function About() {
       </section>
 
       <section className="container-content">
-        <div className="border-t border-border py-28 md:py-36">
-          {/* one colour throughout: picking out one phrase is a generated-page tell */}
-          <blockquote className="max-w-[52rem] text-balance text-[1.875rem] font-bold leading-[1.15] tracking-[-0.02em] text-text-primary md:text-[2.5rem] lg:text-[3.3125rem] lg:leading-[1.08]">
-            {BELIEF.map((sentence) => (
-              <span key={sentence} className="block [&+&]:mt-[0.35em]">
-                {sentence}
-              </span>
-            ))}
-          </blockquote>
-        </div>
-      </section>
-
-      <section className="container-content">
         <div className="border-t border-border py-24">
           <h2 className="text-section-headline">Founders</h2>
+          <p className="mt-5 max-w-[38rem] text-body">
+            Both founders trained as engineers. It shapes how we see a business: as a complex,
+            purposeful system of interacting components, feedback loops and resource flows, where a
+            problem in one part shows up somewhere else.
+          </p>
           <ul className="mt-12 grid grid-cols-2 gap-x-6 gap-y-12 sm:max-w-[38rem] sm:gap-x-10">
             {FOUNDERS.map((founder) => (
               <li key={founder.name}>
@@ -85,6 +67,13 @@ function About() {
                 />
                 <p className="mt-4 text-[1.0625rem] font-bold">{founder.name}</p>
                 <p className="mt-1 text-[0.9375rem] text-text-muted">{founder.title}</p>
+                <Link
+                  to={`/about/${founder.slug}`}
+                  className="text-link mt-3 text-[0.9375rem]"
+                  aria-label={`View profile of ${founder.name}`}
+                >
+                  View profile
+                </Link>
               </li>
             ))}
           </ul>

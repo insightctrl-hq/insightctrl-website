@@ -7,6 +7,7 @@ import Diagnostic from './pages/Diagnostic'
 import About from './pages/About'
 import Thinking from './pages/Thinking'
 import Services from './pages/Services'
+import Profile from './pages/Profile'
 import DataToggle from './dev/DataToggle'
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/diagnostic" element={<Diagnostic />} />
           <Route path="/about" element={<About />} />
+          <Route path="/about/:slug" element={<Profile />} />
           <Route path="/services" element={<Services />} />
           <Route path="/insights" element={<Thinking />} />
           <Route path="/thinking" element={<Navigate to="/insights" replace />} />
