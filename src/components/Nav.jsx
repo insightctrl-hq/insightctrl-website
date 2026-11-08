@@ -20,64 +20,75 @@ function Nav() {
       if (event.key === 'Escape') setMenuOpen(false)
     }
     window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
+    // the page behind the open menu should not scroll
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+      document.body.style.overflow = previousOverflow
+    }
   }, [menuOpen])
 
   return (
-    <header className="nav-material fixed top-0 left-0 right-0 z-50 border-b border-border print:hidden">
-      <div className="container-content flex h-16 items-center justify-between">
-        <Link to="/" onClick={closeMenu} className="flex items-center">
-          <img src={logoSrc} alt="InsightCTRL" className="w-[132px]" />
-        </Link>
+    <>
+      <header className="nav-material fixed top-0 left-0 right-0 z-50 border-b border-border print:hidden">
+        <div className="container-content flex h-16 items-center justify-between">
+          <Link to="/" onClick={closeMenu} className="flex items-center">
+            <img src={logoSrc} alt="InsightCTRL" className="w-[132px]" />
+          </Link>
 
-        <nav className="hidden items-center gap-9 md:flex">
-          {ROUTES.map((route) => {
-            const isActive = location.pathname === route.path
-            return (
-              <Link
-                key={route.path}
-                to={route.path}
-                className={`relative py-1 text-[0.8125rem] font-medium transition-colors ${
-                  isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
-                }`}
-              >
-                {route.label}
-                {isActive && (
-                  <span className="absolute -bottom-1 left-0 right-0 h-px bg-accent-blue" />
-                )}
-              </Link>
-            )
-          })}
-          <ThemeToggle />
-          <IntakeButton label="Book a session" size="sm" />
-        </nav>
+          <nav className="hidden items-center gap-9 md:flex">
+            {ROUTES.map((route) => {
+              const isActive = location.pathname === route.path
+              return (
+                <Link
+                  key={route.path}
+                  to={route.path}
+                  className={`relative py-1 text-[0.8125rem] font-medium transition-colors ${
+                    isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
+                  }`}
+                >
+                  {route.label}
+                  {isActive && (
+                    <span className="absolute -bottom-1 left-0 right-0 h-px bg-accent-blue" />
+                  )}
+                </Link>
+              )
+            })}
+            <ThemeToggle />
+            <IntakeButton label="Book a session" size="sm" />
+          </nav>
 
-        <button
-          type="button"
-          className="flex flex-col gap-[5px] p-1 transition-transform duration-200 ease-out active:scale-[0.9] active:duration-100 md:hidden"
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={menuOpen}
-          aria-controls="mobile-menu"
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          <span
-            className={`h-px w-5 bg-text-primary transition-transform duration-200 ${
-              menuOpen ? 'translate-y-[6px] rotate-45' : ''
-            }`}
-          />
-          <span
-            className={`h-px w-5 bg-text-primary transition-opacity duration-200 ${
-              menuOpen ? 'opacity-0' : ''
-            }`}
-          />
-          <span
-            className={`h-px w-5 bg-text-primary transition-transform duration-200 ${
-              menuOpen ? '-translate-y-[6px] -rotate-45' : ''
-            }`}
-          />
-        </button>
-      </div>
+          <button
+            type="button"
+            className="flex flex-col gap-[5px] p-1 transition-transform duration-200 ease-out active:scale-[0.9] active:duration-100 md:hidden"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            <span
+              className={`h-px w-5 bg-text-primary transition-transform duration-200 ${
+                menuOpen ? 'translate-y-[6px] rotate-45' : ''
+              }`}
+            />
+            <span
+              className={`h-px w-5 bg-text-primary transition-opacity duration-200 ${
+                menuOpen ? 'opacity-0' : ''
+              }`}
+            />
+            <span
+              className={`h-px w-5 bg-text-primary transition-transform duration-200 ${
+                menuOpen ? '-translate-y-[6px] -rotate-45' : ''
+              }`}
+            />
+          </button>
+        </div>
+      </header>
 
+      {/* The menu sits outside the header on purpose. The header's backdrop-filter
+          makes it the containing block for fixed children, which shrank the menu to
+          the 64px bar and let its links spill over the page with no background. */}
       <AnimatePresence>
         {menuOpen && (
           // Enters from the bar that opened it and leaves the same way. A critically
@@ -88,9 +99,9 @@ function Nav() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
-            className="fixed inset-x-0 bottom-0 top-16 z-40 bg-bg-primary md:hidden"
+            className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto bg-bg-primary md:hidden print:hidden"
           >
-            <nav className="container-content flex flex-col items-start gap-7 pt-16">
+            <nav className="container-content flex flex-col items-start gap-7 pt-16 pb-12">
               {ROUTES.map((route) => {
                 const isActive = location.pathname === route.path
                 return (
@@ -98,7 +109,7 @@ function Nav() {
                     key={route.path}
                     to={route.path}
                     onClick={closeMenu}
-                    className={`text-[1.75rem] font-semibold tracking-[-0.02em] ${
+                    className={`text-[1.875rem] font-bold tracking-[-0.02em] ${
                       isActive ? 'text-text-primary' : 'text-text-secondary'
                     }`}
                   >
@@ -114,7 +125,7 @@ function Nav() {
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   )
 }
 
