@@ -1,4 +1,6 @@
 export const TALLY_URL = 'https://tally.so/r/eqV5El'
+// Partner has its own application form
+export const TALLY_PARTNER_URL = 'https://tally.so/r/xVjzjE'
 export const TALLY_FDI_URL = 'https://tally.so/r/eqV5El?source=fdi'
 
 // Tally form that collects an email before a visitor prints their diagnostic

@@ -1,17 +1,19 @@
 import ClosingBand from '../components/ClosingBand'
 import { PRODUCTS } from '../data/products'
-import { TALLY_URL } from '../constants/links'
+import { TALLY_URL, TALLY_PARTNER_URL } from '../constants/links'
 
-// Every link opens the intake form tagged with where it came from, so a request
-// arrives already sorted. (Add a hidden field named "source" in Tally to see it.)
-// Partner should move to its own application form once that exists.
-const intake = (source) => `${TALLY_URL}?source=${source}`
+// Every link opens a form tagged with where it came from, so a request arrives
+// already sorted. (Add a hidden field named "source" in Tally to see it.)
+// Partner goes to its own application form; everything else to the intake form.
+const intake = (source) =>
+  `${source === 'partner' ? TALLY_PARTNER_URL : TALLY_URL}?source=${source}`
 
 // Copy and prices approved by Chibueze, 8 Nov 2026.
 const ENGAGEMENTS = [
   {
     name: 'Operating Room',
-    description: 'One hour on one specific question or task.',
+    description:
+      'One hour on one specific question or task. You get a written diagnostic report within 24 hours.',
     price: ['₦50,000', 'Extra time is ₦25,000 per 30 minutes.'],
     cta: 'Book the Operating Room',
     source: 'operating-room',

@@ -9,9 +9,12 @@ const BELIEF = [
   'Structure makes the other signals visible.',
 ]
 
-// The team section is out for now (user's call, Nov 2026). Bios, if it returns:
-// Chibueze Obunadike: Operational strategy, systems design, and client engagement.
-// Chukwuebuka Abah: Operational review, strategy pressure-testing, and engagement oversight.
+// Names and titles approved 8 Nov 2026. "View profile" links come once the bios
+// are written and approved. Ebuka's photo is a low-resolution stand-in.
+const FOUNDERS = [
+  { name: 'Chibueze Obunadike', title: 'Co-founder', photo: '/team/chibueze-obunadike.jpg' },
+  { name: 'Chukwuebuka Abah', title: 'Co-founder', photo: '/team/chukwuebuka-abah.jpg' },
+]
 
 function About() {
   return (
@@ -63,6 +66,28 @@ function About() {
               </span>
             ))}
           </blockquote>
+        </div>
+      </section>
+
+      <section className="container-content">
+        <div className="border-t border-border py-24">
+          <h2 className="text-section-headline">Founders</h2>
+          <ul className="mt-12 grid grid-cols-2 gap-x-6 gap-y-12 sm:max-w-[38rem] sm:gap-x-10">
+            {FOUNDERS.map((founder) => (
+              <li key={founder.name}>
+                <img
+                  src={founder.photo}
+                  alt={`Portrait of ${founder.name}`}
+                  width="640"
+                  height="800"
+                  loading="lazy"
+                  className="block aspect-[4/5] w-full rounded-lg bg-bg-surface object-cover"
+                />
+                <p className="mt-4 text-[1.0625rem] font-bold">{founder.name}</p>
+                <p className="mt-1 text-[0.9375rem] text-text-muted">{founder.title}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
