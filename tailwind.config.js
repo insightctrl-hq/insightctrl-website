@@ -24,6 +24,7 @@ export default {
         'text-muted': 'var(--text-muted)',
         'accent-blue': 'var(--accent-blue)',
         'accent-cyan': 'var(--accent-cyan)',
+        'accent-link': 'var(--accent-link)',
         success: 'var(--success)',
         pending: 'var(--pending)',
         warning: 'var(--warning)',
@@ -31,9 +32,6 @@ export default {
       },
       fontFamily: {
         sans: ['Satoshi', 'system-ui', '-apple-system', 'sans-serif'],
-      },
-      backgroundImage: {
-        'brand-gradient': 'linear-gradient(90deg, #2563EB, #06B6D4)',
       },
       borderWidth: {
         DEFAULT: 'var(--border-width)',

@@ -10,25 +10,9 @@
   font-display: swap;
 }
 
+/* Light is the default. The dark block must stay after it: on <html> both :root and
+   [data-theme='dark'] match with equal specificity, so source order decides. */
 :root,
-[data-theme='dark'] {
-  --bg-primary: #070D1A;
-  --bg-surface: #0D1526;
-  --bg-elevated: #111D35;
-  --border: #1A2540;
-  --border-accent: #243050;
-  --border-width: 0.5px;
-  --text-primary: #F1F5F9;
-  --text-secondary: #94A3B8;
-  --text-muted: #8A93A6;
-  --accent-blue: #2563EB;
-  --accent-cyan: #06B6D4;
-  --success: #10B981;
-  --pending: #818CF8;
-  --warning: #F59E0B;
-  --danger: #EF4444;
-}
-
 [data-theme='light'] {
   --bg-primary: #FFFFFF;
   --bg-surface: #F8F9FC;
@@ -41,10 +25,31 @@
   --text-muted: #667085;
   --accent-blue: #2563EB;
   --accent-cyan: #06B6D4;
+  /* cyan is ~2.4:1 on white; blue clears 4.5:1 for small link text */
+  --accent-link: #2563EB;
   --success: #059669;
   --pending: #6366F1;
   --warning: #D97706;
   --danger: #DC2626;
+}
+
+[data-theme='dark'] {
+  --bg-primary: #070D1A;
+  --bg-surface: #0D1526;
+  --bg-elevated: #111D35;
+  --border: #1A2540;
+  --border-accent: #243050;
+  --border-width: 0.5px;
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted: #8A93A6;
+  --accent-blue: #2563EB;
+  --accent-cyan: #06B6D4;
+  --accent-link: #60A5FA;
+  --success: #10B981;
+  --pending: #818CF8;
+  --warning: #F59E0B;
+  --danger: #EF4444;
 }
 
 /* Printing always uses the light palette: browsers drop background colours when
@@ -92,35 +97,6 @@ a {
   text-decoration: none;
 }
 
-/* No fill-mode: outside the animation window the element keeps its resting style,
-   so if animations never run the content is visible rather than stuck hidden. */
-@keyframes page-fade-in {
-  from {
-    opacity: 0;
-  }
-}
-
-@keyframes logo-draw-in {
-  from {
-    clip-path: inset(0 100% 0 0);
-  }
-}
-
-.animate-page-in {
-  animation: page-fade-in 0.2s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.animate-logo-draw {
-  animation: logo-draw-in 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-page-in,
-  .animate-logo-draw {
-    animation: none;
-  }
-}
-
 /* Translucent nav: page content scrolls underneath a blurred navy layer instead of
    being cut off by an opaque strip. Falls back to solid wherever blur is unsupported
    or the visitor has asked for less transparency or more contrast. */
@@ -144,44 +120,49 @@ a {
   }
 }
 
+/* Stage picker on the Diagnostic arc: keyboard focus draws a ring around the stage */
+.arc-stage {
+  outline: none;
+}
+
+.arc-stage .arc-focus {
+  opacity: 0;
+}
+
+.arc-stage:focus-visible .arc-focus {
+  opacity: 1;
+}
+
 @layer components {
   .container-content {
-    @apply mx-auto w-full max-w-[880px] px-6;
+    @apply mx-auto w-full max-w-[1120px] px-6 lg:px-8;
   }
 
-  .section {
-    @apply py-20;
-  }
-
-  .section-divider {
-    @apply border-t border-border;
-  }
-
+  /* Type scale: each step a third larger (13 / 17 / 22 / 30 / 40 / 53 / 71px).
+     Home's headline takes the top step; every other page's h1 takes 53. */
   .text-hero {
-    @apply text-[2.5rem] font-bold leading-[1.05] tracking-[-0.02em] text-text-primary md:text-[4rem];
+    @apply text-[2.5rem] font-bold leading-[1.05] tracking-[-0.025em] text-text-primary md:text-[3.3125rem];
   }
 
   .text-section-headline {
-    @apply text-[2.25rem] font-semibold leading-[1.2] tracking-[-0.01em] text-text-primary;
+    @apply text-[1.875rem] font-bold leading-[1.15] tracking-[-0.02em] text-text-primary md:text-[2.5rem];
+  }
+
+  .text-lead {
+    @apply text-[1.375rem] font-medium leading-[1.4] tracking-[-0.01em] text-text-secondary;
   }
 
   .text-body {
-    @apply text-[0.875rem] font-normal leading-[1.75] text-text-secondary;
+    @apply text-[1.0625rem] font-normal leading-[1.6] text-text-secondary;
   }
 
+  /* Small sentence-case label. Only for labels that carry information, such as
+     "Stage 4 of 7"; never as decoration above a heading. */
   .text-eyebrow {
-    @apply text-[0.6875rem] font-medium normal-case tracking-[0.08em] text-text-muted;
+    @apply text-[0.8125rem] font-medium text-text-muted;
   }
 
-  .card {
-    @apply rounded-xl border border-border bg-bg-surface p-5;
-  }
-
-  .card-interactive {
-    @apply card transition-colors duration-200 hover:border-border-accent;
-  }
-
-  .gradient-text {
-    @apply bg-brand-gradient bg-clip-text text-transparent;
+  .text-link {
+    @apply inline-flex items-center text-[1rem] font-medium text-accent-link underline decoration-transparent underline-offset-4 transition-colors duration-200 hover:decoration-current;
   }
 }

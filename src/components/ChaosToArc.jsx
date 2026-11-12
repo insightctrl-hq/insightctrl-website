@@ -1,10 +1,21 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { animate, useMotionValue } from 'framer-motion'
 import { useTheme } from '../hooks/useTheme'
+import HeroArc, { LAYOUTS, arcColors } from './HeroArc'
 
-const DOT_COUNT = 60
+// The seven stage names start scattered at odd angles, then settle into exactly the
+// Home arc. When they land, the canvas hands over to the real HeroArc, so the
+// resolved state is the same component, pulse included.
+const DOT_COUNT = 30
 
-// Deterministic layout so the cluster does not reshuffle on every render.
+// The horizontal arc is only 90 units tall, too cramped to scatter in, so its box
+// gets extra room above and below; the arc sits in the middle of it.
+const BOX = {
+  vertical: { height: 470, offsetY: 0 },
+  horizontal: { height: 190, offsetY: 50 },
+}
+
+// Deterministic layout so the scatter does not reshuffle on every render.
 function mulberry32(seed) {
   let a = seed
   return () => {
@@ -21,146 +32,140 @@ const smoothstep = (x) => {
   return c * c * (3 - 2 * c)
 }
 
-const arcPoint = (t, w, h) => {
-  const p0 = { x: 0.5 * w, y: 0.86 * h }
-  const p1 = { x: 0.7 * w, y: 0.08 * h }
-  const p2 = { x: 0.98 * w, y: 0.42 * h }
-  const u = 1 - t
-  return {
-    x: u * u * p0.x + 2 * u * t * p1.x + t * t * p2.x,
-    y: u * u * p0.y + 2 * u * t * p1.y + t * t * p2.y,
-  }
-}
-
-function ChaosToArc() {
+function ChaosToArc({ orientation = 'vertical' }) {
+  const layout = LAYOUTS[orientation]
+  const box = BOX[orientation]
   const canvasRef = useRef(null)
   const wrapRef = useRef(null)
   const { theme } = useTheme()
   const progress = useMotionValue(0)
+  const [resolved, setResolved] = useState(false)
+  // bumped on each tap, so the scatter runs again from the start
+  const [run, setRun] = useState(0)
 
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduced) {
       progress.set(1)
+      setResolved(true)
       return undefined
     }
-    const controls = animate(progress, [0, 1, 1, 0], {
-      duration: 8,
-      times: [0, 0.375, 0.5, 1],
-      ease: ['easeInOut', 'linear', 'easeInOut'],
-      repeat: Infinity,
+    progress.set(0)
+    // a beat of chaos first, so the visitor sees what is being resolved; a replay
+    // was asked for, so it waits less
+    const controls = animate(progress, 1, {
+      duration: 3,
+      ease: 'easeInOut',
+      delay: run === 0 ? 1 : 0.4,
+      onComplete: () => setResolved(true),
     })
     return () => controls.stop()
-  }, [progress])
+  }, [progress, run])
+
+  const replay = () => {
+    if (!resolved) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    setResolved(false)
+    setRun((n) => n + 1)
+  }
 
   useEffect(() => {
+    if (resolved) return undefined
     const canvas = canvasRef.current
     const wrap = wrapRef.current
     if (!canvas || !wrap) return undefined
     const ctx = canvas.getContext('2d')
-
+    const colors = arcColors(theme === 'light')
     const inkRgb = theme === 'light' ? '26,37,64' : '255,255,255'
-    let width = 0
-    let height = 0
-    let dots = []
-    let edges = []
+    const path = new Path2D(layout.path)
+    let scale = 1
     let raf = 0
 
-    const build = () => {
-      const rand = mulberry32(20260911)
-      dots = []
-      for (let i = 0; i < DOT_COUNT; i += 1) {
-        dots.push({
-          cx: (0.05 + rand() * 0.4) * width,
-          cy: (0.1 + rand() * 0.8) * height,
-          t: i / (DOT_COUNT - 1),
-          phase: rand() * 0.22,
-          wobble: 0.5 + rand() * 1.6,
-          wobblePhase: rand() * Math.PI * 2,
-        })
-      }
-      edges = []
-      for (let i = 0; i < DOT_COUNT; i += 1) {
-        for (let k = 0; k < 2; k += 1) {
-          const j = Math.floor(rand() * DOT_COUNT)
-          if (j === i) continue
-          const d = Math.hypot(dots[i].cx - dots[j].cx, dots[i].cy - dots[j].cy)
-          if (d < width * 0.36) edges.push([i, j])
-        }
-      }
+    const rand = mulberry32(20260911)
+    // each name gets its own height band, in shuffled order, so the scatter looks
+    // random without names piling on top of one another
+    const bands = layout.stages.map((_, i) => i)
+    for (let i = bands.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(rand() * (i + 1))
+      ;[bands[i], bands[j]] = [bands[j], bands[i]]
     }
+    const n = layout.stages.length
+    const words = layout.stages.map((stage, i) => ({
+      stage,
+      cx: (0.08 + rand() * 0.6) * layout.width,
+      cy: ((bands[i] + 0.5) / n) * box.height * 0.88 + box.height * 0.06,
+      angle: (rand() - 0.5) * 1.3,
+      phase: i * 0.03,
+    }))
+    const dots = Array.from({ length: DOT_COUNT }, () => ({
+      cx: rand() * layout.width,
+      cy: rand() * box.height,
+      wobble: 0.5 + rand() * 1.5,
+      wobblePhase: rand() * Math.PI * 2,
+    }))
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
-      const rect = wrap.getBoundingClientRect()
-      width = rect.width
-      height = rect.height
+      const width = wrap.getBoundingClientRect().width
+      scale = width / layout.width
+      const height = box.height * scale
       canvas.width = Math.round(width * dpr)
       canvas.height = Math.round(height * dpr)
       canvas.style.width = `${width}px`
       canvas.style.height = `${height}px`
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      build()
-    }
-
-    const positionOf = (dot, p, time) => {
-      const local = smoothstep((p - dot.phase) / (1 - dot.phase))
-      const target = arcPoint(dot.t, width, height)
-      // wobble decays as the dot settles onto the arc, keeping the motion organic
-      const drift = (1 - local) * dot.wobble * 3
-      return {
-        x: dot.cx + (target.x - dot.cx) * local + Math.sin(time * 0.0011 + dot.wobblePhase) * drift,
-        y: dot.cy + (target.y - dot.cy) * local + Math.cos(time * 0.0009 + dot.wobblePhase) * drift,
-        local,
-      }
+      ctx.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0)
     }
 
     const render = (time) => {
       const p = progress.get()
-      ctx.clearRect(0, 0, width, height)
+      ctx.clearRect(0, 0, layout.width, box.height)
 
-      const points = dots.map((dot) => positionOf(dot, p, time))
+      // the arc line fades in underneath as the names find their places
+      ctx.save()
+      ctx.translate(0, box.offsetY)
+      ctx.globalAlpha = colors.lineOpacity * smoothstep((p - 0.3) / 0.6)
+      ctx.strokeStyle = colors.line
+      ctx.lineWidth = 1.5
+      ctx.lineCap = 'round'
+      ctx.stroke(path)
+      ctx.restore()
 
-      // chaotic connective tissue, fades out as order emerges
-      const edgeAlpha = 0.3 * (1 - smoothstep(p * 1.15))
-      if (edgeAlpha > 0.001) {
-        ctx.lineWidth = 0.6
-        ctx.strokeStyle = `rgba(${inkRgb},${edgeAlpha})`
+      dots.forEach((dot) => {
+        const drift = dot.wobble * 3
+        const x = dot.cx + Math.sin(time * 0.0011 + dot.wobblePhase) * drift
+        const y = dot.cy + Math.cos(time * 0.0009 + dot.wobblePhase) * drift
+        ctx.fillStyle = `rgba(${inkRgb},${0.3 * (1 - smoothstep(p * 1.4))})`
         ctx.beginPath()
-        edges.forEach(([i, j]) => {
-          ctx.moveTo(points[i].x, points[i].y)
-          ctx.lineTo(points[j].x, points[j].y)
-        })
-        ctx.stroke()
-      }
-
-      // the resolved arc, drawn progressively in the brand gradient
-      if (p > 0.02) {
-        const gradient = ctx.createLinearGradient(0.5 * width, height, width, 0.4 * height)
-        gradient.addColorStop(0, '#2563EB')
-        gradient.addColorStop(1, '#06B6D4')
-        ctx.strokeStyle = gradient
-        ctx.lineWidth = 1.5
-        ctx.lineCap = 'round'
-        ctx.globalAlpha = smoothstep((p - 0.02) / 0.98)
-        ctx.beginPath()
-        const steps = 90
-        const drawTo = Math.max(1, Math.floor(steps * smoothstep(p)))
-        for (let s = 0; s <= drawTo; s += 1) {
-          const pt = arcPoint(s / steps, width, height)
-          if (s === 0) ctx.moveTo(pt.x, pt.y)
-          else ctx.lineTo(pt.x, pt.y)
-        }
-        ctx.stroke()
-        ctx.globalAlpha = 1
-      }
-
-      points.forEach((pt) => {
-        const alpha = 0.3 + pt.local * 0.25
-        ctx.fillStyle = `rgba(${inkRgb},${alpha})`
-        ctx.beginPath()
-        ctx.arc(pt.x, pt.y, 1.4 - pt.local * 0.4, 0, Math.PI * 2)
+        ctx.arc(x, y, 1.3, 0, Math.PI * 2)
         ctx.fill()
+      })
+
+      ctx.textBaseline = 'middle'
+      ctx.font = `400 ${layout.fontSize}px Satoshi, system-ui, sans-serif`
+      if ('letterSpacing' in ctx) ctx.letterSpacing = `${layout.fontSize * 0.04}px`
+      words.forEach((word) => {
+        const local = smoothstep((p - word.phase) / (1 - 0.18))
+        const { label, point } = word.stage
+        const drift = (1 - local) * 2.5
+        const x = word.cx + (label.x - word.cx) * local + Math.sin(time * 0.001 + word.angle * 7) * drift
+        const targetY = label.y + box.offsetY
+        const y = word.cy + (targetY - word.cy) * local + Math.cos(time * 0.0008 + word.angle * 5) * drift
+
+        ctx.save()
+        ctx.translate(x, y)
+        ctx.rotate(word.angle * (1 - local))
+        ctx.textAlign = label.anchor === 'middle' ? 'center' : 'left'
+        ctx.fillStyle = colors.idle
+        ctx.globalAlpha = 0.6 + 0.4 * local
+        ctx.fillText(word.stage.name, 0, 0)
+        ctx.restore()
+
+        ctx.globalAlpha = smoothstep((local - 0.5) / 0.5)
+        ctx.fillStyle = colors.dotIdle
+        ctx.beginPath()
+        ctx.arc(point.x, point.y + box.offsetY, 2.5, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.globalAlpha = 1
       })
 
       raf = requestAnimationFrame(render)
@@ -168,7 +173,6 @@ function ChaosToArc() {
 
     resize()
     raf = requestAnimationFrame(render)
-
     const observer = new ResizeObserver(resize)
     observer.observe(wrap)
 
@@ -176,17 +180,34 @@ function ChaosToArc() {
       cancelAnimationFrame(raf)
       observer.disconnect()
     }
-  }, [theme, progress])
+  }, [theme, progress, resolved, layout, box])
+
+  const sizing =
+    orientation === 'vertical'
+      ? { width: layout.width }
+      : { width: '100%', maxWidth: layout.width }
 
   return (
-    <div
+    <button
+      type="button"
       ref={wrapRef}
-      className="h-[420px] w-full"
-      role="img"
-      aria-label="A scattered cluster resolving into a single continuous arc"
+      onClick={replay}
+      aria-label="Replay the seven stages moving from chaos onto the arc"
+      className="relative block cursor-pointer rounded-lg text-left outline-none focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:ring-offset-4 focus-visible:ring-offset-bg-primary"
+      style={{ ...sizing, aspectRatio: `${layout.width} / ${box.height}` }}
     >
-      <canvas ref={canvasRef} className="block" />
-    </div>
+      {resolved ? (
+        <div className="absolute inset-x-0" style={{ top: `${(box.offsetY / box.height) * 100}%` }}>
+          <HeroArc orientation={orientation} />
+        </div>
+      ) : (
+        <canvas
+          ref={canvasRef}
+          className="block"
+          aria-hidden="true"
+        />
+      )}
+    </button>
   )
 }
 

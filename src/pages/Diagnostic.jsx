@@ -1,30 +1,18 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AnimatePresence } from 'framer-motion'
-import StageCard from '../components/StageCard'
-import EngagementTierCard from '../components/EngagementTierCard'
+import { AnimatePresence, motion } from 'framer-motion'
+import Button from '../components/Button'
+import ClosingBand from '../components/ClosingBand'
 import DiagnosticQuestion from '../components/DiagnosticQuestion'
 import DiagnosticResult from '../components/DiagnosticResult'
-import DiagnosticGauge from '../components/DiagnosticGauge'
+import StageArcPicker from '../components/StageArcPicker'
 import { DIAGNOSTIC_STAGES, scoreToBand } from '../data/diagnosticStages'
-
-const HOW_IT_WORKS = [
-  {
-    title: 'Run the diagnostic',
-    body: 'Five free questions. One clear score.',
-  },
-  {
-    title: 'See the root cause',
-    body: 'Traced to the structural failure.',
-  },
-  {
-    title: 'Choose how to work with us',
-    body: 'Book a session, or bring us in to build.',
-  },
-]
 
 function Diagnostic() {
   const navigate = useNavigate()
+  const panelRef = useRef(null)
+  // the stage highlighted on the arc, before the visitor starts its questions
+  const [pickedIndex, setPickedIndex] = useState(0)
   const [selectedStageId, setSelectedStageId] = useState(null)
   const [questionIndex, setQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState([])
@@ -32,6 +20,19 @@ function Diagnostic() {
 
   const selectedStage = DIAGNOSTIC_STAGES.find((stage) => stage.id === selectedStageId) ?? null
   const isComplete = selectedStage && answers.length === selectedStage.questions.length
+
+  const picked = DIAGNOSTIC_STAGES[pickedIndex]
+
+  const pickStage = (index) => {
+    setPickedIndex(index)
+    // On narrow screens the stage details sit below the arc, so bring them into
+    // view; on wide screens they are already beside it.
+    if (!window.matchMedia('(min-width: 1024px)').matches) {
+      requestAnimationFrame(() =>
+        panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }),
+      )
+    }
+  }
 
   const startStage = (stageId) => {
     setSelectedStageId(stageId)
@@ -109,10 +110,11 @@ function Diagnostic() {
     const nextStage = DIAGNOSTIC_STAGES[stageIndex + 1] ?? null
 
     return (
-      <div className="container-content py-20">
-        <div className="mx-auto max-w-xl">
+      <div className="container-content pb-24 pt-16 md:pt-20">
+        <div>
           <DiagnosticResult
             stageName={selectedStage.name}
+            stageIndex={stageIndex}
             score={score}
             band={band}
             rootCause={rootCause}
@@ -126,86 +128,64 @@ function Diagnostic() {
   }
 
   return (
-    <div className="container-content">
-      <section className="grid items-center gap-x-10 py-12 lg:grid-cols-[minmax(0,1fr)_300px]">
-        <div>
-          <p className="text-eyebrow">Take the free diagnostic</p>
-          <h1 className="mt-5 text-section-headline">
-            You may have been solving the wrong problem. Operational clarity starts with an
-            honest diagnosis.
-          </h1>
-          <p className="mt-5 max-w-[32rem] text-body">
-            You already know something is wrong. Pick the stage where the pain is loudest and
-            find out what to fix first.
+    <>
+      <section className="container-content pb-24 pt-16 md:pt-24">
+        <div className="max-w-[46rem]">
+          <h1 className="text-balance text-hero">You may have been solving the wrong problem.</h1>
+          <p className="text-lead mt-6">Operational clarity starts with an honest diagnosis.</p>
+          <p className="mt-4 max-w-[36rem] text-body">
+            Every visible problem in a business traces back to a broken earlier stage. Pick the
+            stage where the pain is loudest and find out what to fix first.
           </p>
         </div>
 
-        <div className="hidden lg:block">
-          <DiagnosticGauge />
+        <div className="mt-16 grid items-start gap-x-20 gap-y-12 lg:grid-cols-[380px_minmax(0,1fr)]">
+          <StageArcPicker
+            stages={DIAGNOSTIC_STAGES}
+            selectedIndex={pickedIndex}
+            onSelect={pickStage}
+          />
+
+          <div ref={panelRef} className="scroll-mt-24 lg:sticky lg:top-28">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={picked.id}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
+                aria-live="polite"
+              >
+                <p className="text-eyebrow">
+                  Stage {pickedIndex + 1} of {DIAGNOSTIC_STAGES.length}
+                </p>
+                <h2 className="mt-3 text-section-headline">{picked.name}</h2>
+                <p className="text-lead mt-5 max-w-[32rem] text-balance text-text-primary">{picked.question}</p>
+                <ul className="mt-8 max-w-[32rem] space-y-3">
+                  {picked.symptoms.map((symptom) => (
+                    <li key={symptom} className="text-body">
+                      {symptom}
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
+                  <Button
+                    label={`Run the ${picked.name} diagnostic`}
+                    size="lg"
+                    onClick={() => startStage(picked.id)}
+                  />
+                  <span className="text-[0.9375rem] text-text-muted">
+                    {picked.questions.length} questions
+                  </span>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
       </section>
 
-      <section className="section-divider py-20">
-        <p className="text-eyebrow">How it works</p>
-        <div className="mt-8 flex flex-col divide-y divide-border sm:flex-row sm:divide-x sm:divide-y-0">
-          {HOW_IT_WORKS.map((step) => (
-            <div
-              key={step.title}
-              className="py-4 first:pt-0 last:pb-0 sm:flex-1 sm:px-6 sm:py-0 sm:first:pl-0"
-            >
-              <h3 className="text-[0.8125rem] font-semibold tracking-[-0.01em] text-text-primary">
-                {step.title}
-              </h3>
-              <p className="mt-1.5 text-[0.8125rem] text-text-secondary">{step.body}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="section-divider py-20">
-        <p className="text-eyebrow">The seven stages</p>
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {DIAGNOSTIC_STAGES.map((stage) => (
-            <StageCard
-              key={stage.id}
-              name={stage.name}
-              question={stage.question}
-              symptoms={stage.symptoms}
-              onDiagnosticClick={() => startStage(stage.id)}
-              onBookClick={() => navigate('/book')}
-            />
-          ))}
-        </div>
-      </section>
-
-      <section className="section-divider py-20">
-        <p className="text-eyebrow">Work with us</p>
-        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
-          <EngagementTierCard
-            badge="Consult"
-            title="Operating Room"
-            description="Sixty minutes with an InsightCTRL advisor. Walk in with a question. Leave with a direction."
-            ctaLabel="Book a session"
-            onCtaClick={() => navigate('/book')}
-          />
-          <EngagementTierCard
-            badge="Build"
-            title="Full Build"
-            description="The strategy is clear. The systems are not. We come in and build them with you."
-            ctaLabel="Start a build"
-            onCtaClick={() => navigate('/book')}
-          />
-          <EngagementTierCard
-            badge="Partner"
-            title="Partner"
-            description="Some visions take longer than a project. We work with a select few founders as their long-term operational partner."
-            ctaLabel="Apply to partner"
-            onCtaClick={() => navigate('/book')}
-            highlight
-          />
-        </div>
-      </section>
-    </div>
+      <ClosingBand secondary={{ label: 'Read our Insights', to: '/insights' }} />
+    </>
   )
 }
 

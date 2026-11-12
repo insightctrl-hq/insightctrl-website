@@ -1,12 +1,12 @@
 const VARIANT_CLASSES = {
-  primary: 'bg-accent-blue text-white border border-accent-blue hover:border-accent-cyan',
+  primary: 'bg-accent-blue text-white border border-accent-blue hover:bg-[#1D4ED8] hover:border-[#1D4ED8]',
   outline: 'bg-transparent text-text-primary border border-border hover:border-border-accent',
 }
 
 const SIZE_CLASSES = {
   sm: 'px-4 py-2 text-[0.8125rem]',
-  md: 'px-5 py-3 text-[0.8125rem]',
-  lg: 'px-6 py-3.5 text-[0.875rem]',
+  md: 'px-5 py-3 text-[0.9375rem]',
+  lg: 'px-6 py-3.5 text-[1rem]',
 }
 
 function Button({
