@@ -14,7 +14,7 @@ function Home() {
               When every decision still waits for you,
             </span>
             <span className="block">your business is running on{' '}chaos.</span>
-            <span className="block">Let's build a business that runs when you step{' '}out.</span>
+            <span className="block">Let's build one that runs when you step{' '}out.</span>
           </h1>
           <p className="text-lead mt-8 max-w-[36rem]">
             Take CTRL of your business. Run our free diagnostic.
