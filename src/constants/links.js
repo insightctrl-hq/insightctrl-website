@@ -15,7 +15,7 @@ export const PAYSTACK_INVOICE_URL = 'https://paystack.shop/pay/insight-ctrl'
 // show. Paste the form ID (the part after tally.so/r/) once the form exists. The form
 // should have hidden fields named stage, band and score.
 // While empty, results show straight away and Print skips the contact step.
-export const TALLY_RESULTS_FORM_ID = ''
+export const TALLY_RESULTS_FORM_ID = 'rDOPd2'
 
 export const SOCIAL_LINKS = {
   x: 'https://x.com/insightctrlhq',
