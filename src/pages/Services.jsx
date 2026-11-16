@@ -1,14 +1,17 @@
 import ClosingBand from '../components/ClosingBand'
-import { PRODUCTS } from '../data/products'
-import { TALLY_URL, TALLY_PARTNER_URL } from '../constants/links'
+import {
+  TALLY_URL,
+  PAYSTACK_OPERATING_ROOM_URL,
+  PAYSTACK_STARTER_SETUP_URL,
+} from '../constants/links'
 
-// Every link opens a form tagged with where it came from, so a request arrives
+// Enquiry links open a form tagged with where they came from, so a request arrives
 // already sorted. (Add a hidden field named "source" in Tally to see it.)
-// Partner goes to its own application form; everything else to the intake form.
-const intake = (source) =>
-  `${source === 'partner' ? TALLY_PARTNER_URL : TALLY_URL}?source=${source}`
+const intake = (source) => `${TALLY_URL}?source=${source}`
 
-// Copy and prices approved by Chibueze, 8 Nov 2026.
+// Copy and prices approved by Chibueze, 8 and 16 Nov 2026. Ordered by price.
+// Operating Room and Starter Setup go straight to payment. Foundation Build, Roundtable
+// and Full Build start with a conversation, because scope and a signed letter come first.
 const ENGAGEMENTS = [
   {
     name: 'Operating Room',
@@ -16,43 +19,51 @@ const ENGAGEMENTS = [
       'One hour on one specific question or task. You get a written diagnostic report within 24 hours.',
     price: ['₦50,000', 'Extra time is ₦25,000 per 30 minutes.'],
     cta: 'Book the Operating Room',
-    source: 'operating-room',
+    href: PAYSTACK_OPERATING_ROOM_URL,
+  },
+  {
+    name: 'Starter Setup',
+    description:
+      'A costing sheet, a cashbook and an order tracker for a small business, set up with you in one 90-minute session.',
+    price: ['₦150,000, fixed.'],
+    cta: 'Start a Starter Setup',
+    href: PAYSTACK_STARTER_SETUP_URL,
   },
   {
     name: 'Operating Room (Roundtable)',
     description:
       'A half day with your leadership team, with the whole business and its operations on the table. You get a written diagnostic summary within 48 hours.',
     price: [
-      // non-breaking spaces keep 'up to 10' from dropping onto a line of its own
-      '₦250,000 for up to 4 people, then ₦50,000 per extra\u00a0person,\u00a0up\u00a0to\u00a010.',
+      // a non-breaking space keeps '10' from dropping onto a line of its own
+      '₦250,000 for up to 6 people, ₦350,000 for 7 to\u00a010.',
       'Extra time is ₦50,000 per 30 minutes.',
     ],
     cta: 'Book a Roundtable',
-    source: 'operating-room-roundtable',
+    href: intake('operating-room-roundtable'),
+  },
+  {
+    name: 'Foundation Build',
+    description:
+      'Three weeks on the first two stages of your business: how it runs today and who does what. You get a one-page map of the business, a role sheet for each key person, your five most important procedures written down, and a weekly money report you can read in five minutes.',
+    price: ['₦750,000, fixed.'],
+    cta: 'Start a Foundation Build',
+    href: intake('foundation-build'),
   },
   {
     name: 'Full Build',
     description:
       'We deliver the strategy and come on board to handle operations and execution for a specific time-bound project.',
-    price: ['Priced per project'],
+    price: ['From ₦1.5M'],
     cta: 'Start a conversation',
-    source: 'full-build',
-  },
-  {
-    name: 'Partner',
-    description:
-      'Some visions take longer than a project. We work with a select few founders as their long-term operational partner.',
-    price: ['By application'],
-    cta: 'Apply to partner',
-    source: 'partner',
+    href: intake('full-build'),
   },
 ]
 
 const external = { target: '_blank', rel: 'noopener noreferrer' }
 
-function IntakeLink({ source, children }) {
+function EngagementLink({ href, children }) {
   return (
-    <a href={intake(source)} {...external} className="text-link mt-5 self-start">
+    <a href={href} {...external} className="text-link mt-5 self-start">
       {children}
     </a>
   )
@@ -93,42 +104,15 @@ function Services() {
                     </p>
                   ))}
                 </div>
-                <IntakeLink source={engagement.source}>{engagement.cta}</IntakeLink>
+                <EngagementLink href={engagement.href}>{engagement.cta}</EngagementLink>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Previews only. A full Tools & Products page will hold everything we build. */}
-      <section className="container-content">
-        <div className="border-t border-border py-24">
-          <h2 className="text-section-headline">Tools &amp; Products</h2>
-          <div className="mt-12 grid gap-x-10 gap-y-14 md:grid-cols-2">
-            {PRODUCTS.map((product) => (
-              <article key={product.name} className="flex flex-col">
-                <div className="overflow-hidden rounded-lg border border-border">
-                  <img
-                    src={product.image}
-                    alt={product.alt}
-                    width={product.width}
-                    height={product.height}
-                    className="block aspect-[16/10] w-full object-cover object-left-top"
-                  />
-                </div>
-                <p className="text-eyebrow mt-6">
-                  <span className="text-text-primary">{product.name}</span>
-                  <span className="ml-3">In testing</span>
-                </p>
-                <h3 className="mt-2 text-[1.375rem] font-bold leading-[1.25] tracking-[-0.01em]">
-                  {product.tagline}
-                </h3>
-                <p className="mt-2 max-w-[30rem] text-body">{product.description}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Tools & Products removed from this page on 16 Nov 2026. src/data/products.js
+          stays, so the section can return once clients use the tools weekly. */}
 
       <ClosingBand />
     </>

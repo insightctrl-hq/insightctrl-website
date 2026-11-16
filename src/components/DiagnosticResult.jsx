@@ -3,35 +3,17 @@ import Button from './Button'
 import StageArcPicker from './StageArcPicker'
 import { DIAGNOSTIC_STAGES } from '../data/diagnosticStages'
 import { TALLY_URL, TALLY_RESULTS_FORM_ID } from '../constants/links'
-import { openTallyPopup } from '../lib/tally'
+import { hasGivenContact, openTallyPopup, rememberContactGiven } from '../lib/tally'
 
 // The rating decides the next step. A Strong score moves on to the next stage; a
 // Partial or Critical one is where a session helps most, so booking leads.
 const BOOKING_FIRST = new Set(['Partial', 'Critical'])
-
-const EMAIL_GIVEN_KEY = 'insightctrl-results-email-given'
 
 const printDate = new Date().toLocaleDateString('en-GB', {
   day: 'numeric',
   month: 'long',
   year: 'numeric',
 })
-
-function rememberEmailGiven() {
-  try {
-    sessionStorage.setItem(EMAIL_GIVEN_KEY, '1')
-  } catch {
-    // storage blocked: they'll just be asked again next time
-  }
-}
-
-function hasGivenEmail() {
-  try {
-    return sessionStorage.getItem(EMAIL_GIVEN_KEY) === '1'
-  } catch {
-    return false
-  }
-}
 
 function DiagnosticResult({
   stageName,
@@ -55,7 +37,7 @@ function DiagnosticResult({
   const handleBook = () => window.open(bookingUrl, '_blank', 'noopener,noreferrer')
 
   const handlePrint = async () => {
-    if (!TALLY_RESULTS_FORM_ID || hasGivenEmail()) {
+    if (!TALLY_RESULTS_FORM_ID || hasGivenContact()) {
       window.print()
       return
     }
@@ -68,7 +50,7 @@ function DiagnosticResult({
         hiddenFields: { stage: stageName, band, score: String(score) },
         onSubmit: () => {
           submitted = true
-          rememberEmailGiven()
+          rememberContactGiven()
         },
         // Print after the popup has gone, so it isn't on the page
         onClose: () => {
