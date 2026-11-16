@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import Button from './Button'
 import StageArcPicker from './StageArcPicker'
 import { DIAGNOSTIC_STAGES } from '../data/diagnosticStages'
-import { TALLY_URL, TALLY_RESULTS_FORM_ID } from '../constants/links'
+import { PAYSTACK_OPERATING_ROOM_URL, TALLY_RESULTS_FORM_ID } from '../constants/links'
 import { hasGivenContact, openTallyPopup, rememberContactGiven } from '../lib/tally'
 
 // The rating decides the next step. A Strong score moves on to the next stage; a
@@ -25,16 +25,10 @@ function DiagnosticResult({
   onContinue,
   onRestart,
 }) {
-  // Scores and stage only, never personal data, so the booking form arrives
-  // with context. Tally ignores these unless the form has matching hidden fields.
-  const bookingUrl = `${TALLY_URL}?${new URLSearchParams({
-    source: 'diagnostic',
-    stage: stageName,
-    band,
-    score: String(score),
-  })}`
-
-  const handleBook = () => window.open(bookingUrl, '_blank', 'noopener,noreferrer')
+  // Booking goes straight to payment. The contact gate has already captured the
+  // visitor's name, WhatsApp number, stage, band and score.
+  const handleBook = () =>
+    window.open(PAYSTACK_OPERATING_ROOM_URL, '_blank', 'noopener,noreferrer')
 
   const handlePrint = async () => {
     if (!TALLY_RESULTS_FORM_ID || hasGivenContact()) {

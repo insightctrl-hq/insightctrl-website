@@ -74,10 +74,10 @@ function Services() {
     <>
       <section className="container-content pb-20 pt-16 md:pb-28 md:pt-24">
         <h1 className="max-w-[48rem] text-balance text-hero">
-          A business is a whole entity, not an instrument.
+          Start with one hour. Build from there.
         </h1>
         <p className="text-lead mt-6 max-w-[38rem]">
-          Strategy is seeing the entire system and knowing which levers to pull to get results.
+          Every engagement ends with something you can use on Monday morning.
         </p>
       </section>
 

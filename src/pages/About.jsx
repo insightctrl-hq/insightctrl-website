@@ -3,8 +3,7 @@ import ChaosToArc from '../components/ChaosToArc'
 import ClosingBand from '../components/ClosingBand'
 import { FOUNDERS } from '../data/founders'
 
-// Hero approved 8 Nov 2026. It carries the revenue-signal belief that used to sit
-// lower down, so that section is gone rather than saying it twice.
+// Hero approved 17 Nov 2026.
 function About() {
   return (
     <>
@@ -13,10 +12,11 @@ function About() {
         <div className="grid items-center gap-x-12 lg:grid-cols-[minmax(0,1fr)_280px]">
           <div>
             <h1 className="max-w-[40rem] text-balance text-hero">
-              Without a system, chaos stays invisible until it kills your business.
+              We build the systems that let a business run when its owner is not in the room.
             </h1>
             <p className="text-lead mt-6 max-w-[34rem]">
-              We work with you to build the strategy and systems your business runs on.
+              InsightCTRL is a strategy and operations firm in Port Harcourt. We start with a
+              diagnosis, then build the structure your business runs on.
             </p>
             <Link to="/services" className="text-link mt-8">
               See how we work
