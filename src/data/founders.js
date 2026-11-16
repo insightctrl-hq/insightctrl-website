@@ -9,8 +9,8 @@ export const FOUNDERS = [
     photo: '/team/chibueze-obunadike.jpg',
     bio: [
       "Chibueze leads InsightCTRL's advisory work, taking each engagement from the first diagnosis to a phased plan and through to delivery.",
-      'He has spent his career running teams and operations. At Enago he supervised and trained two international editorial teams, coordinating work with hundreds of authors in medicine and science on the way to publication in leading journals. He founded Newman Editorial, now Vellum & Co., and built it into a working service business within its first year. He has also coordinated community projects, including TEDx Port Harcourt.',
-      'His first training was in engineering, two years of electrical and electronics engineering at the University of Nigeria, Nsukka. He has been drawn to design and systems engineering ever since, and that thinking runs through how InsightCTRL takes a business apart and rebuilds it. He later studied public administration at Miva Open University.',
+      'He has spent his career running teams and operations. At Enago he supervised and trained over 10 editors across multiple teams, and over 5 years his teams prepared more than 1,500 manuscripts in medicine and science for leading journals. He founded Newman Editorial, now Vellum & Co., and built it into a working service business within its first year. He has also coordinated community projects, including TEDx Port Harcourt.',
+      'His first training was in engineering, two years of electrical and electronics engineering at the University of Nigeria, Nsukka. He has been drawn to design and systems engineering ever since, and that thinking runs through how InsightCTRL takes a business apart and rebuilds it. He is completing a degree in public policy and administration at Miva Open University, where he studies how organisations are designed and run, the same questions InsightCTRL asks of every business it diagnoses.',
     ],
   },
   {
