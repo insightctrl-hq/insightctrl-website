@@ -17,7 +17,11 @@ const ENGAGEMENTS = [
     name: 'Operating Room',
     description:
       'One hour on one specific question or task. You get a written diagnostic report within 24 hours.',
-    price: ['₦50,000', 'Extra time is ₦25,000 per 30 minutes.'],
+    price: [
+      '₦50,000',
+      'Extra time is ₦25,000 per 30 minutes.',
+      "If the hour isn't useful, tell us at the end and we'll refund you in full.",
+    ],
     cta: 'Book the Operating Room',
     href: PAYSTACK_OPERATING_ROOM_URL,
   },

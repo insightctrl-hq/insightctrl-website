@@ -72,6 +72,9 @@ function DiagnosticResult({
         24 hours.
       </p>
       <p className="mt-4 text-[1.0625rem] font-medium text-text-primary">₦50,000</p>
+      <p className="mt-1 text-[0.9375rem] text-text-muted">
+        If the hour isn't useful, tell us at the end and we'll refund you in full.
+      </p>
     </>
   )
 
