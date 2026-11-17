@@ -3,13 +3,19 @@ import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Button from '../components/Button'
 import ClosingBand from '../components/ClosingBand'
+import DiagnosticContactGate from '../components/DiagnosticContactGate'
 import DiagnosticQuestion from '../components/DiagnosticQuestion'
 import DiagnosticResult from '../components/DiagnosticResult'
 import StageArcPicker from '../components/StageArcPicker'
+import { TALLY_RESULTS_FORM_ID } from '../constants/links'
 import { DIAGNOSTIC_STAGES, scoreToBand } from '../data/diagnosticStages'
+import { hasGivenContact } from '../lib/tally'
 
 function Diagnostic() {
   const navigate = useNavigate()
+  // Results wait for a name and WhatsApp number, once per session. With no Tally form
+  // ID set there is nothing to collect, so results show straight away.
+  const [contactGiven, setContactGiven] = useState(() => !TALLY_RESULTS_FORM_ID || hasGivenContact())
   const panelRef = useRef(null)
   // the stage highlighted on the arc, before the visitor starts its questions
   const [pickedIndex, setPickedIndex] = useState(0)
@@ -108,6 +114,19 @@ function Diagnostic() {
     const rootCause = selectedStage.results[band]
     const stageIndex = DIAGNOSTIC_STAGES.findIndex((stage) => stage.id === selectedStage.id)
     const nextStage = DIAGNOSTIC_STAGES[stageIndex + 1] ?? null
+
+    if (!contactGiven) {
+      return (
+        <div className="container-content py-24">
+          <DiagnosticContactGate
+            stageName={selectedStage.name}
+            band={band}
+            score={score}
+            onUnlock={() => setContactGiven(true)}
+          />
+        </div>
+      )
+    }
 
     return (
       <div className="container-content pb-24 pt-16 md:pt-20">

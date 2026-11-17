@@ -26,3 +26,23 @@ export async function openTallyPopup(formId, options) {
   const Tally = await loadTally()
   Tally.openPopup(formId, options)
 }
+
+// Remembers for this browser session that the visitor has already left their contact
+// details, so later stages and Print don't ask again.
+const CONTACT_GIVEN_KEY = 'insightctrl-results-email-given'
+
+export function rememberContactGiven() {
+  try {
+    sessionStorage.setItem(CONTACT_GIVEN_KEY, '1')
+  } catch {
+    // storage blocked: they'll just be asked again next time
+  }
+}
+
+export function hasGivenContact() {
+  try {
+    return sessionStorage.getItem(CONTACT_GIVEN_KEY) === '1'
+  } catch {
+    return false
+  }
+}

@@ -24,6 +24,17 @@ function Profile() {
           <div>
             <h1 className="text-section-headline">{founder.name}</h1>
             <p className="mt-2 text-[1.0625rem] text-text-muted">{founder.title}</p>
+            {founder.linkedin && (
+              <a
+                href={founder.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-link mt-3 text-[0.9375rem]"
+                aria-label={`${founder.name} on LinkedIn`}
+              >
+                LinkedIn
+              </a>
+            )}
             <div className="mt-8 max-w-[36rem] space-y-5">
               {founder.bio.map((paragraph) => (
                 <p key={paragraph.slice(0, 24)} className="text-body">

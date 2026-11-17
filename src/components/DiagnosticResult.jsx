@@ -2,36 +2,18 @@ import { motion } from 'framer-motion'
 import Button from './Button'
 import StageArcPicker from './StageArcPicker'
 import { DIAGNOSTIC_STAGES } from '../data/diagnosticStages'
-import { TALLY_URL, TALLY_RESULTS_FORM_ID } from '../constants/links'
-import { openTallyPopup } from '../lib/tally'
+import { PAYSTACK_OPERATING_ROOM_URL, TALLY_RESULTS_FORM_ID } from '../constants/links'
+import { hasGivenContact, openTallyPopup, rememberContactGiven } from '../lib/tally'
 
 // The rating decides the next step. A Strong score moves on to the next stage; a
 // Partial or Critical one is where a session helps most, so booking leads.
 const BOOKING_FIRST = new Set(['Partial', 'Critical'])
-
-const EMAIL_GIVEN_KEY = 'insightctrl-results-email-given'
 
 const printDate = new Date().toLocaleDateString('en-GB', {
   day: 'numeric',
   month: 'long',
   year: 'numeric',
 })
-
-function rememberEmailGiven() {
-  try {
-    sessionStorage.setItem(EMAIL_GIVEN_KEY, '1')
-  } catch {
-    // storage blocked: they'll just be asked again next time
-  }
-}
-
-function hasGivenEmail() {
-  try {
-    return sessionStorage.getItem(EMAIL_GIVEN_KEY) === '1'
-  } catch {
-    return false
-  }
-}
 
 function DiagnosticResult({
   stageName,
@@ -43,19 +25,13 @@ function DiagnosticResult({
   onContinue,
   onRestart,
 }) {
-  // Scores and stage only, never personal data, so the booking form arrives
-  // with context. Tally ignores these unless the form has matching hidden fields.
-  const bookingUrl = `${TALLY_URL}?${new URLSearchParams({
-    source: 'diagnostic',
-    stage: stageName,
-    band,
-    score: String(score),
-  })}`
-
-  const handleBook = () => window.open(bookingUrl, '_blank', 'noopener,noreferrer')
+  // Booking goes straight to payment. The contact gate has already captured the
+  // visitor's name, WhatsApp number, stage, band and score.
+  const handleBook = () =>
+    window.open(PAYSTACK_OPERATING_ROOM_URL, '_blank', 'noopener,noreferrer')
 
   const handlePrint = async () => {
-    if (!TALLY_RESULTS_FORM_ID || hasGivenEmail()) {
+    if (!TALLY_RESULTS_FORM_ID || hasGivenContact()) {
       window.print()
       return
     }
@@ -68,7 +44,7 @@ function DiagnosticResult({
         hiddenFields: { stage: stageName, band, score: String(score) },
         onSubmit: () => {
           submitted = true
-          rememberEmailGiven()
+          rememberContactGiven()
         },
         // Print after the popup has gone, so it isn't on the page
         onClose: () => {
@@ -96,6 +72,9 @@ function DiagnosticResult({
         24 hours.
       </p>
       <p className="mt-4 text-[1.0625rem] font-medium text-text-primary">₦50,000</p>
+      <p className="mt-1 text-[0.9375rem] text-text-muted">
+        If the hour isn't useful, tell us at the end and we'll refund you in full.
+      </p>
     </>
   )
 
