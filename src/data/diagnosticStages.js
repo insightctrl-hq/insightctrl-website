@@ -2,7 +2,7 @@ export const DIAGNOSTIC_STAGES = [
   {
     id: 'clarity',
     name: 'Clarity',
-    question: 'Does your business actually know what it is, and can it prove it is working?',
+    question: 'Do you know exactly where your money goes each month?',
     symptoms: [
       'Not sure if the business is profitable this month.',
       'No consistent operating rhythm. Each week is improvised.',
@@ -67,7 +67,7 @@ export const DIAGNOSTIC_STAGES = [
   {
     id: 'architecture',
     name: 'Architecture',
-    question: 'Does your business run when you are not in the room?',
+    question: 'Does every person know what they own and who decides?',
     symptoms: [
       'Everything stops when you step away.',
       'Your team returns to you for decisions already made.',
@@ -262,7 +262,7 @@ export const DIAGNOSTIC_STAGES = [
   {
     id: 'movement',
     name: 'Movement',
-    question: 'Are you growing by design, or just spending like you are?',
+    question: 'Does your growth come from a plan, or from whoever happens to call?',
     symptoms: [
       'Sales unpredictable. Good month, bad month, no pattern.',
       'Marketing is active but not converting.',

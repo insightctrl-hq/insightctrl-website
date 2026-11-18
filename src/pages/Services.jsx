@@ -28,7 +28,7 @@ const ENGAGEMENTS = [
   {
     name: 'Starter Setup',
     description:
-      'A costing sheet, a cashbook and an order tracker for a small business, set up with you in one 90-minute session.',
+      'A costing sheet, a cashbook and an order tracker for a small business, set up with you in one 90-minute session. Includes three months of KoboCTRL Business, then ₦27,000 a quarter.',
     price: ['₦150,000, fixed.'],
     cta: 'Start a Starter Setup',
     href: PAYSTACK_STARTER_SETUP_URL,
@@ -48,8 +48,8 @@ const ENGAGEMENTS = [
   {
     name: 'Foundation Build',
     description:
-      'Three weeks on the first two stages of your business: how it runs today and who does what. You get a one-page map of the business, a role sheet for each key person, your five most important procedures written down, and a weekly money report you can read in five minutes.',
-    price: ['₦750,000, fixed.'],
+      'Four weeks on the structure of your business: where the money goes, who owns what, and the one offer that repeats and pays. You get a one-page map of the business, a role sheet for each key person, your five most important procedures written down, a weekly money report you can read in five minutes, and your main offer priced and written as a standard.',
+    price: ['₦950,000, fixed.'],
     cta: 'Start a Foundation Build',
     href: intake('foundation-build'),
   },
