@@ -2,7 +2,7 @@ export const DIAGNOSTIC_STAGES = [
   {
     id: 'clarity',
     name: 'Clarity',
-    question: 'Does your business actually know what it is, and can it prove it is working?',
+    question: 'Do you know exactly where your money goes each month?',
     symptoms: [
       'Not sure if the business is profitable this month.',
       'No consistent operating rhythm. Each week is improvised.',
@@ -67,7 +67,7 @@ export const DIAGNOSTIC_STAGES = [
   {
     id: 'architecture',
     name: 'Architecture',
-    question: 'Does your business run when you are not in the room?',
+    question: 'Does every person know what they own and who decides?',
     symptoms: [
       'Everything stops when you step away.',
       'Your team returns to you for decisions already made.',
@@ -254,7 +254,7 @@ export const DIAGNOSTIC_STAGES = [
       Strong:
         'Your governance layer is functioning. Data is visible and decisions are grounded in numbers. Consider running the Movement diagnostic. The next risk at this stage is scaling without the right market infrastructure.',
       Partial:
-        'You are making decisions partially blind. Root cause: inconsistent data review and no tracking system mean problems compound before they are caught. Five well-chosen KPIs reviewed weekly changes everything.',
+        'You are making decisions partially blind. Root cause: inconsistent data review and no tracking system mean problems compound before they are caught. Choose the one number that shows the business is performing, and make it update every week without you putting it together.',
       Critical:
         'You have no control layer. Root cause: without a measurement system, the business cannot be managed. It can only be reacted to. Every decision is a guess and every problem arrives too late.',
     },
@@ -262,7 +262,7 @@ export const DIAGNOSTIC_STAGES = [
   {
     id: 'movement',
     name: 'Movement',
-    question: 'Are you growing by design, or just spending like you are?',
+    question: 'Does your growth come from a plan, or from whoever happens to call?',
     symptoms: [
       'Sales unpredictable. Good month, bad month, no pattern.',
       'Marketing is active but not converting.',
@@ -386,7 +386,7 @@ export const DIAGNOSTIC_STAGES = [
       Partial:
         'Your team is working hard but working blind. Root cause: people hired before systems existed cannot perform to standards that were never defined. Define the role, the system, and the standard first.',
       Critical:
-        'Your team is entirely dependent on your direction. Root cause: no defined roles, no standards, no systems mean the team can only do what you tell them when you tell them. This is not a people problem. It is an architecture problem.',
+        'Your team is entirely dependent on your direction. Root cause: the team was handed work without the structure to carry it. Check the stages below People first: whether each person has a number that shows success (Control), one standard offer to deliver (Signature) and defined authority (Architecture). Fix the lowest one that fails, then hand over.',
     },
   },
   {

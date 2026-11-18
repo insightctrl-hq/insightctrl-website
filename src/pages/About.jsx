@@ -37,8 +37,8 @@ function About() {
           <h2 className="text-section-headline">From Chaos to CTRL.</h2>
           <p className="mt-5 max-w-[36rem] text-body">
             A seven-stage operational engineering sequence that moves a business from structural
-            chaos to founder control. Every visible problem in a business traces back to a broken
-            earlier stage. We find that stage and build from there.
+            chaos to founder control. Most problems start at an earlier stage than the one where
+            they show up. We find the lowest stage that is broken and build from there.
           </p>
           <Link to="/diagnostic" className="text-link mt-6">
             Run the diagnostic

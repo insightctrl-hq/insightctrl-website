@@ -153,8 +153,8 @@ function Diagnostic() {
           <h1 className="text-balance text-hero">You may have been solving the wrong problem.</h1>
           <p className="text-lead mt-6">Operational clarity starts with an honest diagnosis.</p>
           <p className="mt-4 max-w-[36rem] text-body">
-            Every visible problem in a business traces back to a broken earlier stage. Pick the
-            stage where the pain is loudest and find out what to fix first.
+            Most problems in a business start at an earlier stage than the one where they show
+            up. Pick the stage where the pain is loudest and find out what to fix first.
           </p>
         </div>
 
