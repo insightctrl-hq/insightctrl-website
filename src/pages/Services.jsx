@@ -49,7 +49,11 @@ const ENGAGEMENTS = [
     name: 'Foundation Build',
     description:
       'Four weeks on the structure of your business: where the money goes, who owns what, and the one offer that repeats and pays. You get a one-page map of the business, a role sheet for each key person, your five most important procedures written down, a weekly money report you can read in five minutes, and your main offer priced and written as a standard.',
-    price: ['₦950,000, fixed.'],
+    price: [
+      '₦950,000, fixed.',
+      'Or start with Clarity, the money stage, for ₦400,000 over two weeks. Add the rest within 60 days for ₦550,000.',
+      'Includes three months of KoboCTRL Business where your staff handle money, then ₦27,000 a quarter.',
+    ],
     cta: 'Start a Foundation Build',
     href: intake('foundation-build'),
   },
